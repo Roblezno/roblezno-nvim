@@ -1,0 +1,17 @@
+# TODO: PLUGIN INSTALL
+- alpha
+- auto-session
+- cmp
+- telescope
+- lspconfig
+- noice
+- notify
+- neotree
+- quarto
+- render-md
+- slime
+- tmux-nav
+- toggleterm
+- treesitter
+- trouble
+
