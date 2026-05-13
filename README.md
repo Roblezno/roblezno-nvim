@@ -1,4 +1,5 @@
 # roblezno-nvim
+*Work in progress*
 
 My personal config of nvim.
 
