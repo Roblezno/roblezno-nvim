@@ -1,3 +1,11 @@
+-- ============================================================================
+-- TITLE: kanagawa
+-- ABOUT: Custom theme for neovim
+-- LINKS
+-- > github: https://github.com/rebelot/kanagawa.nvim
+-- > more themes: https://github.com/topics/neovim-colorscheme
+-- ============================================================================
+
 return {
     "rebelot/kanagawa.nvim",
     lazy = false,
