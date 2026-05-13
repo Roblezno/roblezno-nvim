@@ -16,8 +16,8 @@ vim.api.nvim_create_autocmd("BufReadPost", {
 		if mark[1] > 0 and mark[1] <= lcount then
 			pcall(vim.api.nvim_win_set_cursor, 0, mark) -- Sets the cursor line
 		end
+        desc = "Restore last cursor position when reopening a file"
 	end,
-    desc = "Restore last cursor position when reopening a file"
 })
 
 -- Highlight the yanked text for 200ms
@@ -30,6 +30,19 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 			higroup = "IncSearch",
 			timeout = 200,
 		})
+    	desc = "Highlight the yanked text for 200ms"
 	end,
-    desc = "Highlight the yanked text for 200ms"
+})
+
+-- Treesitter autocmds
+local treesitter_group = vim.api.nvim_create_augroup('Treesitter', {})
+vim.api.nvim_create_autocmd('FileType', {
+  pattern = { '*' }, -- Enabled in any file type
+  callback = function() 
+      vim.treesitter.start()
+      -- Enables treesitter based folding
+      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
+      vim.wo[0][0].foldmethod = 'expr'
+      desc = "Enables treesitter syntax highlighting"
+  end,
 })
