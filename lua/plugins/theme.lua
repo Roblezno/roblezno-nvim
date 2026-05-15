@@ -15,6 +15,16 @@ return {
         transparent = true, 
         commentStyle = { italic = true },
         theme = "wave",
+        -- Remove background of LineNr {Sign, Fold}Column and friends
+        colors = {
+            theme = {
+                all = {
+                    ui = {
+                        bg_gutter = "none"
+                    }
+                }
+            }
+        }
     },
     -- Theme must be initialized with config func
     -- Passing opt params
