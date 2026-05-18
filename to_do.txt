@@ -1,17 +1,13 @@
 # TODO: PLUGIN INSTALL
+!- add cmp to terminal nvim commands
 - alpha
 - auto-session
-- cmp
-- telescope
-- lspconfig
 - noice
 - notify
-- neotree
 - quarto
 - render-md
 - slime
 - tmux-nav
 - toggleterm
-- treesitter
 - trouble
 
