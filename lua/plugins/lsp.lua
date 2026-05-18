@@ -13,7 +13,6 @@
 -- ============================================================================
 
 
-
 return {
     -- NOTE: Recommended setup from mason-lspconfig
     "mason-org/mason-lspconfig.nvim",
@@ -36,7 +35,5 @@ return {
         require("mason-lspconfig").setup(opts)
         -- Habilito R para que trabaje con el R del sistema no el de Mason
         vim.lsp.enable("r_language_server")
-
-        -- TODO: Configure lua recommended configuration for nvim
     end,
 }
