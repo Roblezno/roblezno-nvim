@@ -59,7 +59,13 @@ return {
     -- when the Rust fuzzy matcher is not available, by using `implementation = "prefer_rust"`
     --
     -- See the fuzzy documentation for more information
-    fuzzy = { implementation = "prefer_rust_with_warning" }
+    fuzzy = { implementation = "prefer_rust_with_warning" },
+
+    -- Implement cmdline cmp, inheritting defined config
+    cmdline = {
+        keymap = { preset = "inherit" },
+        completion = { menu = { auto_show = true } },
+    }
   },
   opts_extend = { "sources.default" }
 }
