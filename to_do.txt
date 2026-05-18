@@ -1,5 +1,4 @@
 # TODO: PLUGIN INSTALL
-!- add cmp to terminal nvim commands
 - alpha
 - auto-session
 - noice
