@@ -3,7 +3,7 @@
 > A personalized, robust, and minimal Neovim configuration built for **Bioinformatics**, deep understanding of IDE mechanics, and seamless workflow.
 
 [![Work in Progress](https://img.shields.io/badge/Status-Work%20in%20Progress-orange)](#)
-[![Neovim](https://img.shields.io/badge/Neovim-0.9+-blue.svg)](https://neovim.io/)
+[![Neovim](https://img.shields.io/badge/Neovim-0.12+-blue.svg)](https://neovim.io/)
 [![Lua](https://img.shields.io/badge/Language-Lua-blue)](#)
 
 ## 📖 The Philosophy
@@ -44,12 +44,12 @@ Before installing, make sure you have the following tools installed on your syst
 > **Note:** Be sure to back up your existing Neovim configuration before proceeding!
 
 1. **Backup your current configuration:**
-   ```bash
-   mv ~/.config/nvim ~/.config/nvim.bak
-   mv ~/.local/share/nvim ~/.local/share/nvim.bak
-   mv ~/.local/state/nvim ~/.local/state/nvim.bak
-   mv ~/.cache/nvim ~/.cache/nvim.bak
-   ```
+```{bash}
+mv ~/.config/nvim ~/.config/nvim.bak
+mv ~/.local/share/nvim ~/.local/share/nvim.bak
+mv ~/.local/state/nvim ~/.local/state/nvim.bak
+mv ~/.cache/nvim ~/.cache/nvim.bak
+```
 
 **2. Clone the repository**
 ```{bash}
@@ -64,13 +64,15 @@ nvim
 *The plugin manager will automatically bootstrap and install all configured plugins upon the first launch*
 
 ## 📂 Project Structure
+
 ~/.config/nvim/
 ├── init.lua              # Main entry point
 ├── lazy-lock.json        # Plugin lockfile to ensure reproducible environments
 ├── to_do.txt             # Project tracking and upcoming features
 └── lua/                  # Core Neovim configuration and plugin specs
 
-🤝 Contributing & Feedback
+## 🤝 Contributing & Feedback
+
 This is primarily a personal configuration, but feedback, suggestions, and tips are always welcome! Feel free to open an Issue if you see a way to optimize the code or improve the setup.
 
 Built with ❤️ to make the terminal feel like home.
