@@ -5,7 +5,7 @@ return {
   config = function()
     -- Install parsers and queries
     require('nvim-treesitter').install{
-        'lua', 'python', "r"
+        'lua', 'python', "r", "vim"
     }
   end
 }

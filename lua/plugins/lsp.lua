@@ -28,8 +28,15 @@ return {
             "lua_ls",
             "vimls",
             "pyright",
-            "r_language_server",
+            --"r_language_server",
         },
-
     },
+    config = function(_, opts)
+        -- Cargo la tabla opts al setup de mason-lspconfig manualmente
+        require("mason-lspconfig").setup(opts)
+        -- Habilito R para que trabaje con el R del sistema no el de Mason
+        vim.lsp.enable("r_language_server")
+
+        -- TODO: Configure lua recommended configuration for nvim
+    end,
 }
