@@ -1,12 +1,15 @@
 # TODO: PLUGIN INSTALL
+
+# Utilities
 - alpha
 - auto-session
 - noice
 - notify
+
+# Markdown
 - quarto
 - render-md
 - slime
 - tmux-nav
-- toggleterm
-- trouble
+- toggleterm ?
 
