@@ -19,7 +19,14 @@ return {
     -- event = {"BufReadPre", "BufNewFile"}, -- lsp load only when on a buffer
     dependencies = {
         "neovim/nvim-lspconfig",
-        {"mason-org/mason.nvim", opts = {}},
+        {
+            "mason-org/mason.nvim",
+            opts = {
+                ui = {
+                    border = "single"
+                }
+            }
+        },
     },
     opts = {
         -- Define auto install / enable languages (only from Mason)
