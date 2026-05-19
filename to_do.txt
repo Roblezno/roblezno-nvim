@@ -1,7 +1,6 @@
 # TODO: PLUGIN INSTALL
 
 # Utilities
-- alpha
 - auto-session
 - noice
 - notify
