@@ -17,5 +17,8 @@ return {
         end)
         -- Live grep inside files (from the current directory and subdir)
         vim.keymap.set("n", "<space>fg", require("telescope.builtin").live_grep)
+
+        -- Fzf buffers
+        vim.keymap.set("n", "<leader>fb", require("telescope.builtin").buffers)
     end
 }
