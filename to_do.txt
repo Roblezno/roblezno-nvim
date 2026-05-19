@@ -2,13 +2,11 @@
 
 # Utilities
 - auto-session
-- noice
-- notify
 
 # Markdown
 - quarto
 - render-md
 - slime
 - tmux-nav
-- toggleterm ?
+- toggleterm ? ( custom floating terminals )
 
