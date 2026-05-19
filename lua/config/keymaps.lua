@@ -28,10 +28,10 @@ vim.keymap.set("v", ">", ">gv", { desc = "Indent right and reselect" })
 -- Better J behavior
 vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
 
--- Better J behavior
-vim.keymap.set("n", "J", "mzJ`z", { desc = "Join lines and keep cursor position" })
+-- Clear search clutter (nohlsearch)
+vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>', { desc = 'Clears search results (nohlsearch)' })
 
 -- NeoTree keymaps
--- Abrir y cerrar Neo-tree con <Leader> + e (explorer)
+-- Open and close Neo-tree with <Leader> + e (explorer)
 vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { noremap = true, silent = true, desc = "Toggle Neo-tree" })
 

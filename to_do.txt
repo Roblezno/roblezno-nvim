@@ -1,9 +1,7 @@
 # TODO: PLUGIN INSTALL
 
 # Markdown
-- quarto
 - render-md
-- slime
 - tmux-nav
 - toggleterm ? ( custom floating terminals )
 
