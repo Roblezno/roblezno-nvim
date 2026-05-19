@@ -50,5 +50,9 @@ require("lazy").setup({
       disabled_plugins = {},
     },
   },
+
+  ui = {
+      border = "single",
+  }
 })
 
