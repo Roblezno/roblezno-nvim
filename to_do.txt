@@ -1,7 +1,2 @@
-# TODO: PLUGIN INSTALL
-
-# Markdown
-- render-md
-- tmux-nav
 - toggleterm ? ( custom floating terminals )
 
