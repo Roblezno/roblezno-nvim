@@ -45,7 +45,7 @@ vim.keymap.set('n', '<leader>mp', function()
   vim.cmd("normal! k")
   -- Entra en modo inserción
   vim.cmd("startinsert")
-end, { desc = 'Insertar bloque de Python' })
+end, { desc = 'Insert Python code chunk' })
 
 -- R
 vim.keymap.set('n', '<leader>mr', function()
@@ -55,11 +55,9 @@ vim.keymap.set('n', '<leader>mr', function()
   vim.cmd("normal! k")
   -- Entra en modo inserción
   vim.cmd("startinsert")
-end, { desc = 'Insertar bloque de R ' })
+end, { desc = 'Insert R code chunk' })
 
 -- bash
-
--- R
 vim.keymap.set('n', '<leader>mb', function()
   -- Inserta las 3 líneas del bloque
   vim.api.nvim_put({"```{bash}", "", "```"}, "l", true, true)
@@ -67,4 +65,25 @@ vim.keymap.set('n', '<leader>mb', function()
   vim.cmd("normal! k")
   -- Entra en modo inserción
   vim.cmd("startinsert")
-end, { desc = 'Insertar bloque de Bash ' })
+end, { desc = 'Insert bash code chunk' })
+
+-- Slime, run code in terminal
+-- NOTE: Markdown code block keymaps are defined in quarto-md plugin file
+
+-- Native slime config options
+-- Pick terminal
+vim.keymap.set("n", "<leader>rs", "<Plug>SlimeConfig", {desc = "Pick a terminal for running code (Slime)"})
+-- Run code selection in visual mode
+vim.keymap.set("x", "<leader>rv", "<Plug>SlimeRegionSend", {desc = "Run visual selection in terminal", silent = true})
+---- Run line in NORMAL and INSERT modes
+vim.keymap.set("n", "<leader>rl", "<cmd>SlimeSend<CR>", {desc = "Run line in the terminal", silent = true})
+
+
+
+
+
+
+
+
+
+

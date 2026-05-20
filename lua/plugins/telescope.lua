@@ -10,7 +10,7 @@ return {
         -- Fzf files in the current directory (and subdirectories)
         vim.keymap.set("n", "<space>ff", require("telescope.builtin").find_files)
         -- Edit nvim config no mather where I am
-        vim.keymap.set("n", "<space>en", function()
+        vim.keymap.set("n", "<space>fn", function()
             require('telescope.builtin').find_files{
                 cwd = vim.fn.stdpath("config")
             }
