@@ -12,14 +12,14 @@ return {
             heading = {
                 backgrounds = {}, -- Disables heading background
             },
-            code = {
-                border = 'single',
-                width = "block",
-                min_width = 80,
-                style = "full",
-                left_pad = 2,
-                right_pad = 2
-            },
+--            code = {
+--                border = 'single',
+--                width = "block",
+--                min_width = 80,
+--                style = "full",
+--                left_pad = 2,
+--                right_pad = 2
+--            },
             win_options = {
                 concealcursor = {
                     -- 'n' = Normal, 'v' = Visual, 'i' = Insert, 'c' = Command
