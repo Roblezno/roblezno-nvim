@@ -37,5 +37,18 @@ return {
         nerd_font_variant = 'mono'
     },
 
+   -- Command line config opts
+   cmdline = {
+       enabled = true,
+       keymap = {
+           preset = "cmdline", -- Sets the default bindings for cmd line
+       },
+       completion = {
+           menu = {
+               auto_show = true, -- Automatically displays the menu
+           }
+       }
+   },
+
   },
 }
