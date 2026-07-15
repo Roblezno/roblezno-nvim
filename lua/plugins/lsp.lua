@@ -34,10 +34,20 @@ return {
             "lua_ls",
             "vimls",
             "pyright",
+            "nextflow_ls"
             --"r_language_server",
         },
     },
     config = function(_, opts)
+        -- NOTE: Nextflow lsp opts
+        vim.lsp.config("nextflow_ls", {
+            on_attach = function (client)
+                client.server_capabilities.semanticTokensProvider = nil
+            end,
+        })
+
+        -- NOTE: R lsp config
+
         -- Cargo la tabla opts al setup de mason-lspconfig manualmente
         require("mason-lspconfig").setup(opts)
         -- Habilito R para que trabaje con el R del sistema no el de Mason
