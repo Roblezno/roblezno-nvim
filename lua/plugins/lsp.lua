@@ -34,11 +34,28 @@ return {
             "lua_ls",
             "vimls",
             "pyright",
-            "nextflow_ls"
+            "ruff",
+            "nextflow_ls",
             --"r_language_server",
         },
     },
     config = function(_, opts)
+        -- NOTE: Python lsp opts
+        vim.lsp.config("pyright", {
+            settings = {
+                pyright = {
+                    disableOrganizeImports = true,
+                },
+            },
+        })
+
+        vim.lsp.config("ruff", {
+            on_attach = function(client)
+                -- Pyright provides more complete hover information.
+                client.server_capabilities.hoverProvider = false
+            end,
+        })
+
         -- NOTE: Nextflow lsp opts
         vim.lsp.config("nextflow_ls", {
             on_attach = function (client)

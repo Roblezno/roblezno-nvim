@@ -145,8 +145,10 @@ The configuration currently installs or enables support for:
 
 - Lua through `lua_ls`.
 - Vimscript through `vimls`.
-- Python through `pyright`.
+- Python through `pyright` and `ruff`.
 - R through `r_language_server`.
+
+For Python, Pyright provides type checking and language intelligence, while Ruff provides lint diagnostics, code actions, import organization, and formatting. Ruff follows project-level configuration from `pyproject.toml`, `ruff.toml`, or `.ruff.toml`; fixes and formatting are not run automatically on save.
 
 Treesitter parsers are configured for:
 
