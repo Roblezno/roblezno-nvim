@@ -42,9 +42,13 @@ vim.api.nvim_create_autocmd("FileType", {
     group = prose_group,
     pattern = { "markdown", "quarto" },
     callback = function(args)
-        pcall(vim.treesitter.start, args.buf, "markdown")
+        local highlighted = pcall(vim.treesitter.start, args.buf, "markdown")
+        local inline_ok, inline_loaded = pcall(vim.treesitter.language.add, "markdown_inline")
+        vim.opt_local.spelllang = { "en", "es" }
+        -- Both syntax trees are needed to exclude code blocks and inline code.
+        vim.opt_local.spell = highlighted and inline_ok and inline_loaded == true
     end,
-    desc = "Enable Markdown syntax trees for prose and code chunks",
+    desc = "Enable Markdown syntax trees and English/Spanish prose spelling",
 })
 
 vim.api.nvim_create_autocmd("LspAttach", {

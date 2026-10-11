@@ -36,6 +36,7 @@ The result is a Neovim setup that aims to be:
 - Completion powered by [blink.cmp](https://github.com/Saghen/blink.cmp).
 - Treesitter support for Lua, Python, R, Vim, Markdown, and inline Markdown.
 - Quarto and Markdown workflow support through [quarto-nvim](https://github.com/quarto-dev/quarto-nvim).
+- Native English/Spanish spell-checking for Markdown and Quarto prose, without automatic completion popups.
 - Code execution from Quarto/Markdown documents using [vim-slime](https://github.com/jpalardy/vim-slime) and tmux.
 - File search, text search, and buffer navigation with [Telescope](https://github.com/nvim-telescope/telescope.nvim).
 - File explorer support with [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim).
@@ -142,6 +143,28 @@ The Quarto workflow is configured to use Slime as the default code runner. In pr
 In Markdown and Quarto buffers, programming completion, LSP documentation/signature popups, and diagnostics are restricted to fenced code bodies. Prose, YAML front matter, inline code, and fence delimiters do not receive this assistance. Whole-document language servers are detached; Otter retains language support for code chunks. Completion in ordinary source files and the command line is unchanged.
 
 This separation uses the Markdown Treesitter parser. If the parser is unavailable, programming assistance stays quiet throughout the markup buffer rather than leaking into prose. The required Markdown parsers are included in the existing Treesitter installation configuration.
+
+### Prose Spelling
+
+Markdown and Quarto prose automatically use Neovim's built-in English and Spanish spell-checking (`spelllang=en,es`). Words accepted by either language are considered correct. This checks spelling, not grammar or writing style, and does not add a language server or automatic suggestion menus.
+
+Treesitter marks prose for spelling and excludes fenced/indented code blocks (including their comments and strings), front matter, inline code, link destinations, and autolinks. Spell-checking stays off if the Markdown highlighter cannot start or the inline Markdown parser is unavailable, rather than treating code as prose.
+
+Useful native commands:
+
+| Command | Action |
+| --- | --- |
+| `]s` | Jump to the next misspelled word |
+| `[s` | Jump to the previous misspelled word |
+| `z=` | Show correction suggestions |
+| `zg` | Add a scientific term, name, or other accepted word to the personal word list |
+| `zG` | Ignore a word for the current Neovim session |
+| `:setlocal nospell` | Turn spell-checking off in the current window |
+| `:setlocal spell` | Turn spell-checking back on |
+
+For a document written in just one language, use `:setlocal spelllang=en` or `:setlocal spelllang=es` to avoid accepting words from the other language. The default for newly opened Markdown/Quarto buffers remains bilingual.
+
+If a dictionary is missing, Neovim may ask permission to download it when spelling is enabled; Spanish commonly needs this on the first use. See `:help spell` and `:help spell-SpellFileMissing`. The configuration does not silently download dictionaries.
 
 ## Language Support
 
