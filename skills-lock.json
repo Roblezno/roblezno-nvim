@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "neovim": {
+      "source": "kriscard/skills",
+      "sourceType": "github",
+      "skillPath": "skills/dotfiles/neovim/SKILL.md",
+      "computedHash": "4458d1552bde1479f9c85f92f63e9418ab1f0d7aee9e5d90606169942afb2c1e"
+    }
+  }
+}

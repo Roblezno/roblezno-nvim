@@ -34,7 +34,7 @@ The result is a Neovim setup that aims to be:
 - Plugin management with [lazy.nvim](https://github.com/folke/lazy.nvim).
 - Language Server Protocol support through [Mason](https://github.com/mason-org/mason.nvim), [mason-lspconfig](https://github.com/mason-org/mason-lspconfig.nvim), and [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
 - Completion powered by [blink.cmp](https://github.com/Saghen/blink.cmp).
-- Treesitter support for Lua, Python, R, and Vim.
+- Treesitter support for Lua, Python, R, Vim, Markdown, and inline Markdown.
 - Quarto and Markdown workflow support through [quarto-nvim](https://github.com/quarto-dev/quarto-nvim).
 - Code execution from Quarto/Markdown documents using [vim-slime](https://github.com/jpalardy/vim-slime) and tmux.
 - File search, text search, and buffer navigation with [Telescope](https://github.com/nvim-telescope/telescope.nvim).
@@ -139,6 +139,10 @@ The leader key is used for most custom mappings. If you are new to the setup, [w
 
 The Quarto workflow is configured to use Slime as the default code runner. In practice, this means that code chunks can be sent from Neovim to a tmux pane, which keeps editing and execution close together inside the terminal.
 
+In Markdown and Quarto buffers, programming completion, LSP documentation/signature popups, and diagnostics are restricted to fenced code bodies. Prose, YAML front matter, inline code, and fence delimiters do not receive this assistance. Whole-document language servers are detached; Otter retains language support for code chunks. Completion in ordinary source files and the command line is unchanged.
+
+This separation uses the Markdown Treesitter parser. If the parser is unavailable, programming assistance stays quiet throughout the markup buffer rather than leaking into prose. The required Markdown parsers are included in the existing Treesitter installation configuration.
+
 ## Language Support
 
 The configuration currently installs or enables support for:
@@ -156,6 +160,8 @@ Treesitter parsers are configured for:
 - Python.
 - R.
 - Vim.
+- Markdown.
+- Inline Markdown.
 
 Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Treesitter parsers can be added in `lua/plugins/treesitter.lua`.
 

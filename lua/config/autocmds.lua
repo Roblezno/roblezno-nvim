@@ -34,6 +34,87 @@ vim.api.nvim_create_autocmd("TextYankPost", {
 	end,
 })
 
+-- Keep programming assistance inside Markdown and Quarto code chunks.
+local prose = require("config.prose")
+local prose_group = vim.api.nvim_create_augroup("QuartoProse", {})
+
+vim.api.nvim_create_autocmd("FileType", {
+    group = prose_group,
+    pattern = { "markdown", "quarto" },
+    callback = function(args)
+        pcall(vim.treesitter.start, args.buf, "markdown")
+    end,
+    desc = "Enable Markdown syntax trees for prose and code chunks",
+})
+
+vim.api.nvim_create_autocmd("LspAttach", {
+    group = prose_group,
+    callback = function(args)
+        if not prose.is_markup(args.buf) then
+            return
+        end
+        local client = vim.lsp.get_client_by_id(args.data.client_id)
+        if client and client.name ~= "otter-ls[" .. args.buf .. "]" then
+            -- Wait for attachment to finish before detaching whole-document servers.
+            vim.schedule(function()
+                if vim.api.nvim_buf_is_valid(args.buf) and prose.is_markup(args.buf) then
+                    vim.lsp.buf_detach_client(args.buf, client.id)
+                end
+            end)
+        end
+    end,
+    desc = "Use only Otter's code-chunk LSP bridge in markup buffers",
+})
+
+vim.api.nvim_create_autocmd("DiagnosticChanged", {
+    group = prose_group,
+    callback = function(args)
+        if not prose.is_markup(args.buf) then
+            return
+        end
+        local diagnostics = args.data.diagnostics
+        local namespace = diagnostics[1] and diagnostics[1].namespace
+        if not namespace then
+            return
+        end
+        if not vim.startswith(vim.diagnostic.get_namespace(namespace).name, "otter-lang-") then
+            -- Detached whole-document clients can still publish queued diagnostics.
+            vim.diagnostic.reset(namespace, args.buf)
+            return
+        end
+
+        local chunks = prose.code_chunks(args.buf)
+        local filtered = {}
+        local changed = false
+        -- Read copies: Otter shares the incoming diagnostic objects with its buffers.
+        for _, diagnostic in ipairs(vim.diagnostic.get(args.buf, { namespace = namespace })) do
+            local code_chunk
+            for _, chunk in ipairs(chunks) do
+                if diagnostic.lnum >= chunk.start_row and diagnostic.lnum < chunk.end_row then
+                    code_chunk = chunk
+                    break
+                end
+            end
+            if code_chunk then
+                if diagnostic.end_lnum >= code_chunk.end_row then
+                    diagnostic.end_lnum = code_chunk.end_row - 1
+                    local line = vim.api.nvim_buf_get_lines(args.buf, diagnostic.end_lnum, diagnostic.end_lnum + 1, false)[1]
+                    diagnostic.end_col = #line
+                    changed = true
+                end
+                filtered[#filtered + 1] = diagnostic
+            else
+                changed = true
+            end
+        end
+        -- Only rewrite changed lists, since set() emits DiagnosticChanged again.
+        if changed then
+            vim.diagnostic.set(namespace, args.buf, filtered)
+        end
+    end,
+    desc = "Keep only code-chunk diagnostics in markup buffers",
+})
+
 -- NOTE: The next chunk of code its only needed for enabling treesitter
 -- for specific filetypes that don't usually have it
 -- Treesitter autocmds

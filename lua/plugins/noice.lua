@@ -10,6 +10,29 @@ return
   event = "VeryLazy",
   opts = {
     -- add any options here
+      routes = {
+          {
+              filter = {
+                  event = "lsp",
+                  kind = { "hover", "signature" },
+                  cond = function(message)
+                      local prose = require("config.prose")
+                      if not prose.is_markup() then
+                          return false
+                      end
+                      -- Close existing signatures when moving from code into prose.
+                      local stay = message.opts.stay
+                      if stay then
+                          message.opts.stay = function()
+                              return not prose.is_prose() and stay()
+                          end
+                      end
+                      return prose.is_prose()
+                  end,
+              },
+              opts = { skip = true },
+          },
+      },
       lsp = {
     -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
         override = {

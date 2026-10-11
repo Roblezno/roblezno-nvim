@@ -10,6 +10,10 @@ return {
   dependencies = { 'rafamadriz/friendly-snippets' },
   version = "1.*",
   opts = {
+    enabled = function()
+      return not require("config.prose").is_prose()
+    end,
+
     -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
     -- 'super-tab' for mappings similar to vscode (tab to accept)
     -- 'enter' for enter to accept
