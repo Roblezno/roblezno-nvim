@@ -35,6 +35,7 @@ return {
             "vimls",
             "pyright",
             "ruff",
+            "bashls",
             "nextflow_ls",
             --"r_language_server",
         },

@@ -39,31 +39,25 @@ vim.keymap.set('n', '<leader>e', ':Neotree toggle<CR>', { noremap = true, silent
 -- Markdown code blocks
 -- PYTHON
 vim.keymap.set('n', '<leader>mp', function()
-  -- Inserta las 3 líneas del bloque
-  vim.api.nvim_put({"```{python}", "", "```"}, "l", true, true)
-  -- Sube el cursor una línea para quedar en medio
-  vim.cmd("normal! k")
-  -- Entra en modo inserción
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, row, row, true, { "```{python}", "", "```" })
+  vim.api.nvim_win_set_cursor(0, { row + 2, 0 })
   vim.cmd("startinsert")
 end, { desc = 'Insert Python code chunk' })
 
 -- R
 vim.keymap.set('n', '<leader>mr', function()
-  -- Inserta las 3 líneas del bloque
-  vim.api.nvim_put({"```{r}", "", "```"}, "l", true, true)
-  -- Sube el cursor una línea para quedar en medio
-  vim.cmd("normal! k")
-  -- Entra en modo inserción
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, row, row, true, { "```{r}", "", "```" })
+  vim.api.nvim_win_set_cursor(0, { row + 2, 0 })
   vim.cmd("startinsert")
 end, { desc = 'Insert R code chunk' })
 
 -- bash
 vim.keymap.set('n', '<leader>mb', function()
-  -- Inserta las 3 líneas del bloque
-  vim.api.nvim_put({"```{bash}", "", "```"}, "l", true, true)
-  -- Sube el cursor una línea para quedar en medio
-  vim.cmd("normal! k")
-  -- Entra en modo inserción
+  local row = vim.api.nvim_win_get_cursor(0)[1]
+  vim.api.nvim_buf_set_lines(0, row, row, true, { "```{bash}", "", "```" })
+  vim.api.nvim_win_set_cursor(0, { row + 2, 0 })
   vim.cmd("startinsert")
 end, { desc = 'Insert bash code chunk' })
 

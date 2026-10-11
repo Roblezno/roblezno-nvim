@@ -34,7 +34,7 @@ The result is a Neovim setup that aims to be:
 - Plugin management with [lazy.nvim](https://github.com/folke/lazy.nvim).
 - Language Server Protocol support through [Mason](https://github.com/mason-org/mason.nvim), [mason-lspconfig](https://github.com/mason-org/mason-lspconfig.nvim), and [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
 - Completion powered by [blink.cmp](https://github.com/Saghen/blink.cmp).
-- Treesitter support for Lua, Python, R, Vim, Markdown, and inline Markdown.
+- Treesitter support for Lua, Python, R, Bash, Vim, Markdown, and inline Markdown.
 - Quarto and Markdown workflow support through [quarto-nvim](https://github.com/quarto-dev/quarto-nvim).
 - Native English/Spanish spell-checking for Markdown and Quarto prose, without automatic completion popups.
 - Code execution from Quarto/Markdown documents using [vim-slime](https://github.com/jpalardy/vim-slime) and tmux.
@@ -144,6 +144,10 @@ In Markdown and Quarto buffers, programming completion, LSP documentation/signat
 
 This separation uses the Markdown Treesitter parser. If the parser is unavailable, programming assistance stays quiet throughout the markup buffer rather than leaking into prose. The required Markdown parsers are included in the existing Treesitter installation configuration.
 
+Quarto discovers newly introduced Python, R, and Bash chunk languages when entering/leaving Insert mode or saving a `.qmd` file. It reactivates Otter only when a recognized language lacks its code buffer, reusing existing buffers and language servers. Diagnostics for languages omitted by the rebuilt raft are cleared. Chunk-insertion mappings can trigger discovery before typing; manually typed chunks are retried when leaving Insert mode or saving. A newly started language server may need a moment before completion becomes available. Reopening the document is not required.
+
+Each chunk language needs its matching Treesitter parser and language server. Bash's parser and `bashls` (`bash-language-server`) are included in the existing Treesitter/Mason installation lists; R retains the system language-server setup. These dependencies must finish installing before completion is available.
+
 ### Prose Spelling
 
 Markdown and Quarto prose automatically use Neovim's built-in English and Spanish spell-checking (`spelllang=en,es`). Words accepted by either language are considered correct. This checks spelling, not grammar or writing style, and does not add a language server or automatic suggestion menus.
@@ -174,6 +178,7 @@ The configuration currently installs or enables support for:
 - Vimscript through `vimls`.
 - Python through `pyright` and `ruff`.
 - R through `r_language_server`.
+- Bash through `bashls`.
 
 For Python, Pyright provides type checking and language intelligence, while Ruff provides lint diagnostics, code actions, import organization, and formatting. Ruff follows project-level configuration from `pyproject.toml`, `ruff.toml`, or `.ruff.toml`; fixes and formatting are not run automatically on save.
 
@@ -182,6 +187,7 @@ Treesitter parsers are configured for:
 - Lua.
 - Python.
 - R.
+- Bash.
 - Vim.
 - Markdown.
 - Inline Markdown.
