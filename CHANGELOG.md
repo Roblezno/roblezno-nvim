@@ -7,6 +7,11 @@ as version 1.1.0.
 
 ## Unreleased
 
+### Fixed
+
+- **1.0.1 — Telescope:** Initialize Telescope explicitly and activate its
+  installed native fzf sorter. Document the setup order and native dependency.
+
 ## 1.0.0
 
 ### Baseline
