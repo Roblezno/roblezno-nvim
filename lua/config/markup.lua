@@ -34,6 +34,9 @@ function M.setup()
         { "<leader>ma", function() require("quarto.runner").run_above() end, desc = "Run current and previous cells (current language)" },
         { "<leader>mA", function() require("quarto.runner").run_all() end, desc = "Run all cells (current language)" },
         { "<leader>mt", "<cmd>RenderMarkdown toggle<CR>", desc = "Toggle Markdown/Quarto rendering" },
+        -- Quarto's command triggers load its preview support on demand.
+        { "<leader>mv", "<cmd>QuartoPreview<CR>", desc = "Preview document with Quarto" },
+        { "<leader>mV", "<cmd>QuartoClosePreview<CR>", desc = "Close Quarto preview" },
     }
 
     -- Extend the existing ftplugin cleanup so changing filetype removes our

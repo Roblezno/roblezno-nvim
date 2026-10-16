@@ -10,9 +10,18 @@ return {
   "folke/which-key.nvim",
   event = "VeryLazy",
   opts = {
-    -- your configuration comes here
-    -- or leave it empty to use the default settings
-    -- refer to the configuration section below
+    -- Label existing prefixes; the actions stay in their native/plugin owners.
+    -- Run includes Visual mode because Slime can send the current selection.
+    spec = {
+      { "<leader>f", group = "Find" },
+      { "<leader>b", group = "Buffers" },
+      { "<leader>s", group = "Splits" },
+      { "<leader>m", group = "Markdown/Quarto" },
+      { "<leader>r", group = "Run", mode = { "n", "x" } },
+      { "<leader>t", group = "Trouble" },
+      { "<leader>w", group = "Sessions" },
+      { "<leader>c", group = "Code" },
+    },
   },
   keys = {
     {

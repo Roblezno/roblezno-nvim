@@ -107,6 +107,21 @@ The leader key is used for most custom mappings. If you are new to the setup, [w
 - Plugin-wide actions are declared in the owning plugin's `keys` specification: Telescope, Neo-tree, Slime, and tmux navigation.
 - `after/ftplugin/markdown.lua` and `after/ftplugin/quarto.lua` call `lua/config/markup.lua` to install buffer-local document mappings. The shared module owns their definitions, chunk-insertion helper, and cleanup when a buffer's filetype changes.
 
+Which-key labels the existing prefixes so their purpose is visible while choosing an action:
+
+| Prefix | Group |
+| --- | --- |
+| `<leader>f` | Find |
+| `<leader>b` | Buffers |
+| `<leader>s` | Splits |
+| `<leader>m` | Markdown/Quarto |
+| `<leader>r` | Run |
+| `<leader>t` | Trouble |
+| `<leader>w` | Sessions |
+| `<leader>c` | Code |
+
+The Run group is available in Normal and Visual modes for Slime's execution actions. Use `<leader>?` in Normal mode to inspect the current buffer's local mappings. Group labels live in `lua/plugins/which-key.lua`; the actions retain the ownership described above.
+
 ### Selective Plugin Loading
 
 Loading decisions are declared in the individual plugin specifications:
@@ -128,9 +143,21 @@ Lazy also loads a plugin when one of its Lua modules is required. The shared doc
 | `<leader>fg` | Search text with live grep |
 | `<leader>fb` | List open buffers |
 | `<leader>fn` | Search files inside the Neovim config |
+| `<leader>fr` | Find recently opened files |
+| `<leader>fw` | Search the word under the cursor in the current working directory |
+| `<leader>fh` | Search help tags |
+| `<leader>fk` | Search keymaps |
 | `<leader>e` | Toggle Neo-tree |
 | `<leader>bn` | Go to next buffer |
 | `<leader>bp` | Go to previous buffer |
+
+The search mappings above use Normal mode. Recent files come from Neovim's file history; they are not restricted to the current project. The keymap picker includes Normal, Insert, command-line, and Visual mappings by default.
+
+### Undo History
+
+In Normal mode, `<leader>u` toggles Neovim 0.12's bundled undo-tree viewer. The mapping first runs `:packadd nvim.undotree`, then `:Undotree`, so the optional package is loaded when needed.
+
+Moving the cursor through the tree changes the source buffer to the corresponding undo state. This uses the native undo history, including persistent history configured in `lua/config/options.lua`. See `:help package-undotree` and `:help undo-tree`.
 
 ### Windows and Splits
 
@@ -161,11 +188,15 @@ The pane-navigation mappings above are available in Normal mode. Inside tmux, `<
 | `<leader>ma` | Normal | Markdown/Quarto | Run current and previous cells in the current cell's language |
 | `<leader>mA` | Normal | Markdown/Quarto | Run all cells in the current cell's language |
 | `<leader>mt` | Normal | Markdown/Quarto | Toggle Markdown/Quarto rendering |
+| `<leader>mv` | Normal | Markdown/Quarto | Preview the document with Quarto |
+| `<leader>mV` | Normal | Markdown/Quarto | Close the document's Quarto preview |
 | `<leader>rs` | Normal | Any buffer | Select the Slime target terminal |
 | `<leader>rv` | Visual | Any buffer | Send a visual selection to the terminal |
 | `<leader>rl` | Normal | Any buffer | Send the current line to the terminal |
 
 The Quarto workflow is configured to use Slime as the default code runner. In practice, this means that code chunks can be sent from Neovim to a tmux pane, which keeps editing and execution close together inside the terminal.
+
+Preview actions use the Quarto CLI and load the plugin through its existing command triggers. Run the close-preview shortcut from the document that started the preview. Previewing ordinary Markdown does not replace the explicit Otter activation described below.
 
 Quarto buffers automatically activate Otter's code-chunk language support. In ordinary Markdown, run `:QuartoActivate` explicitly to enable that support and initialize the cell runner for the current document. Run it again after adding a previously unused chunk language in Markdown. Chunk insertion and rendering mappings are provided by the filetype setup; chunk execution requires the activated document, with the cursor inside a code cell.
 
@@ -228,6 +259,18 @@ The configuration currently installs or enables support for:
 
 For Python, Pyright provides type checking and language intelligence, while Ruff provides lint diagnostics, code actions, import organization, and formatting. Ruff follows project-level configuration from `pyproject.toml`, `ruff.toml`, or `.ruff.toml`; fixes and formatting are not run automatically on save.
 
+### Manual Source Formatting
+
+Use `<leader>cf` in Normal mode to format the current source buffer through Neovim's native LSP client. The mapping in `lua/config/keymaps.lua` checks attached clients for whole-document formatting support when invoked:
+
+- **Python:** use only the attached `ruff` client.
+- **Other source buffers:** use the sole available formatting client, or choose one with the native provider picker when several qualify. Client names and IDs distinguish the choices.
+- **Unavailable formatter:** show an informational message. Installing or attaching a language server alone does not imply that it supports formatting.
+
+The request targets one client and runs synchronously using Neovim's defaults. It is an explicit whole-buffer action; it does not format on save. Markdown/Quarto documents and special buffers are excluded from this shortcut because mixed-language formatting needs its own agreed workflow. See `:help vim.lsp.buf.format()`.
+
+### Syntax Highlighting
+
 Treesitter parsers are configured for:
 
 - Lua.
@@ -245,6 +288,19 @@ If a source parser is unavailable when a buffer opens, highlighting activation i
 Treesitter folding is configured independently through Neovim's native fold expression in `lua/config/options.lua`. This highlighting setup does not enable nvim-treesitter's experimental indentation feature.
 
 Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Treesitter parsers can be added in `lua/plugins/treesitter.lua`; to enable highlighting for another ordinary source language, also add its filetype to the `SourceTreesitter` autocmd in `lua/config/autocmds.lua` and account for any parser-name mismatch.
+
+### Native Syntax Selection
+
+Enter Visual mode with `v`, then use Neovim 0.12's native syntax-selection mappings:
+
+| Key | Action |
+| --- | --- |
+| `an` | Select a parent syntax node |
+| `in` | Select the previous (or first) child syntax node |
+| `]n` | Select the next syntax node |
+| `[n` | Select the previous syntax node |
+
+These mappings use the buffer's Treesitter parser. When no parser is available, `an` and `in` can fall back to LSP selection ranges if an attached server supports them. See `:help treesitter-defaults`.
 
 ## Project Structure
 
