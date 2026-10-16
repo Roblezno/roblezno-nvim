@@ -7,6 +7,14 @@ as version 1.1.0.
 
 ## Unreleased
 
+### 1.0.4 — 2026-10-16
+
+#### Changed
+
+- **Persistent undo:** Consolidate setup into one documented block with a single
+  directory-creation check. Derive the `undodir` location from Neovim's standard
+  data path so it respects `XDG_DATA_HOME` and `NVIM_APPNAME`.
+
 ### 1.0.3 — 2026-10-16
 
 #### Fixed

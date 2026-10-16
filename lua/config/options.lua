@@ -50,7 +50,6 @@ vim.opt.synmaxcol = 300 -- Syntax highlighting column limit
 vim.opt.backup = false -- Don't create backup files
 vim.opt.writebackup = false -- Don't backup before overwriting
 vim.opt.swapfile = false -- Don't create swap files
-vim.opt.undofile = true -- Persistent undo
 vim.opt.updatetime = 300 -- Time in ms to trigger CursorHold
 vim.opt.timeoutlen = 500 -- Time in ms to wait for mapped sequence
 vim.opt.ttimeoutlen = 0 -- No wait for key code sequences
@@ -60,20 +59,14 @@ vim.opt.diffopt:append("vertical") -- Vertical diff splits
 vim.opt.diffopt:append("algorithm:patience") -- Better diff algorithm
 vim.opt.diffopt:append("linematch:60") -- Better diff highlighting (smart line matching)
 
--- Set undo directory and ensure it exists
-local undodir = "~/.local/share/nvim/undodir" -- Undo directory path
-vim.opt.undodir = vim.fn.expand(undodir) -- Expand to full path
-local undodir_path = vim.fn.expand(undodir)
-if vim.fn.isdirectory(undodir_path) == 0 then
-	vim.fn.mkdir(undodir_path, "p") -- Create if not exists
-end
-
--- Set undo directory and ensure it exists
-local undodir = "~/.local/share/nvim/undodir" -- Undo directory path
-vim.opt.undodir = vim.fn.expand(undodir) -- Expand to full path
-local undodir_path = vim.fn.expand(undodir)
-if vim.fn.isdirectory(undodir_path) == 0 then
-	vim.fn.mkdir(undodir_path, "p") -- Create if not exists
+-- Persistent undo: keep edit history when files are reopened.
+-- The standard data path respects XDG_DATA_HOME and NVIM_APPNAME.
+-- HELP: :help undo-persistence, :help stdpath()
+vim.opt.undofile = true -- Save history on file write and restore it on file read
+local undodir = vim.fn.stdpath("data") .. "/undodir"
+vim.opt.undodir = undodir
+if vim.fn.isdirectory(undodir) == 0 then
+	vim.fn.mkdir(undodir, "p") -- Create the directory and any missing parents
 end
 
 -- Behavior Settings
@@ -113,5 +106,4 @@ vim.opt.splitright = true -- Vertical splits open to the right
 
 
 -- END OF BASIC CONFIG OPTS
-
 
