@@ -7,6 +7,24 @@ as version 1.1.0.
 
 ## Unreleased
 
+### 1.0.5 — 2026-10-16
+
+#### Fixed
+
+- Scope chunk insertion, execution, and rendering shortcuts to Markdown/Quarto
+  buffers, with cleanup when the filetype changes.
+- Replace tmux navigation mappings executed inside the plugin specification
+  table with declared mappings, including descriptions and upstream defaults.
+
+#### Changed
+
+- Keep native editor-wide mappings in `config/keymaps.lua` and move Telescope,
+  Neo-tree, Slime, and tmux actions into their owning plugin specifications.
+- Share document mappings and chunk insertion through `config/markup.lua`,
+  called by the Markdown and Quarto `after/ftplugin` files.
+- Document mapping ownership, mode/scope, and explicit `:QuartoActivate` use
+  for ordinary Markdown. Clarify same-language multi-cell execution.
+
 ### 1.0.4 — 2026-10-16
 
 #### Changed

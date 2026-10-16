@@ -1,3 +1,9 @@
+-- ============================================================================
+-- TITLE: Markdown/Quarto rendering
+-- ABOUT: Render document markup; config.markup owns the buffer-local toggle
+-- URL: https://github.com/MeanderingProgrammer/render-markdown.nvim
+-- ============================================================================
+
 return {
     {
         'MeanderingProgrammer/render-markdown.nvim',
@@ -28,13 +34,6 @@ return {
                     -- Si quieres que esté renderizado SIEMPRE (incluso al editar), usa 'nvic'.
                     rendered = 'nc', 
                 },
-            },
-        },
-        keys = {
-            {
-                "<leader>mt", -- Cambia esto por el atajo que prefieras (ej. Toggle Markdown)
-                "<cmd>RenderMarkdown toggle<CR>",
-                desc = "Alternar vista renderizada de Markdown/Quarto",
             },
         },
     }
