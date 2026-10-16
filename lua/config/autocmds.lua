@@ -119,17 +119,18 @@ vim.api.nvim_create_autocmd("DiagnosticChanged", {
     desc = "Keep only code-chunk diagnostics in markup buffers",
 })
 
--- NOTE: The next chunk of code its only needed for enabling treesitter
--- for specific filetypes that don't usually have it
--- Treesitter autocmds
---local treesitter_group = vim.api.nvim_create_augroup('Treesitter', {})
---vim.api.nvim_create_autocmd('FileType', {
---  pattern = {'<filetype'},
---  callback = function() 
---      vim.treesitter.start()
---      -- Enables treesitter based folding
---      vim.wo[0][0].foldexpr = 'v:lua.vim.treesitter.foldexpr()'
---      vim.wo[0][0].foldmethod = 'expr'
---      desc = "Enables treesitter syntax highlighting"
---  end,
---})
+-- Start source-file highlighting separately from the markup/spelling setup above.
+-- Installing parsers in plugins/treesitter.lua does not enable their highlighters.
+-- HELP: :help treesitter-highlight, :help vim.treesitter.start()
+local source_treesitter_group = vim.api.nvim_create_augroup("SourceTreesitter", {})
+vim.api.nvim_create_autocmd("FileType", {
+    group = source_treesitter_group,
+    pattern = { "lua", "python", "r", "sh", "bash", "vim" },
+    callback = function(args)
+        -- Shell scripts normally use the "sh" filetype, but their parser is "bash".
+        local language = args.match == "sh" and "bash" or args.match
+        -- Parser installation is asynchronous; allow files to open while it finishes.
+        pcall(vim.treesitter.start, args.buf, language)
+    end,
+    desc = "Enable Treesitter highlighting for configured source filetypes",
+})
