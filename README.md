@@ -158,11 +158,28 @@ Quarto buffers automatically activate Otter's code-chunk language support. In or
 
 In Markdown and Quarto buffers, programming completion, LSP documentation/signature popups, and diagnostics are restricted to fenced code bodies. Prose, YAML front matter, inline code, and fence delimiters do not receive this assistance. Whole-document language servers are detached; Otter retains language support for code chunks. Completion in ordinary source files and the command line is unchanged.
 
-This separation uses the Markdown Treesitter parser. If the parser is unavailable, programming assistance stays quiet throughout the markup buffer rather than leaking into prose. The required Markdown parsers are included in the existing Treesitter installation configuration.
+This separation uses the Markdown Treesitter parser through `lua/config/prose.lua`. If the parser is unavailable, `code_chunks()` returns no code-body ranges and `is_prose()` treats the markup buffer as prose: Blink's buffer completion and Noice's LSP popups are suppressed, and forwarded code diagnostics are filtered out. The required Markdown parsers are included in the existing Treesitter installation configuration.
 
 Quarto discovers newly introduced Python, R, and Bash chunk languages when entering/leaving Insert mode or saving a `.qmd` file. It reactivates Otter only when a recognized language lacks its code buffer, reusing existing buffers and language servers. Diagnostics for languages omitted by the rebuilt raft are cleared. Chunk-insertion mappings can trigger discovery before typing; manually typed chunks are retried when leaving Insert mode or saving. A newly started language server may need a moment before completion becomes available. Reopening the document is not required.
 
 Each chunk language needs its matching Treesitter parser and language server. Bash's parser and `bashls` (`bash-language-server`) are included in the existing Treesitter/Mason installation lists; R retains the system language-server setup. These dependencies must finish installing before completion is available.
+
+### Document Workflow Internals
+
+`lua/config/quarto.lua` is the coordination point for Markdown/Quarto events. Syntax-context detection lives in `lua/config/prose.lua`, while buffer-local document mappings live in `lua/config/markup.lua`.
+
+The initialization and event flow is:
+
+1. **Register guards during native configuration.** `lua/config/autocmds.lua` calls `require("config.quarto").setup()` before Lazy loads plugins. The coordinator registers the named `QuartoProse` and `QuartoChunkLanguages` augroups using native APIs. Plugin modules are resolved inside callbacks; language discovery waits for Quarto's configuration table to be available.
+2. **Configure the plugins.** The eagerly loaded `lua/plugins/quarto-md.lua` configures languages, completion, diagnostics, and the Slime runner. Blink and Noice retain their options in their own specifications.
+3. **Set up each document.** On `FileType`, the coordinator enables Markdown highlighting and parser-aware spelling. Quarto's upstream ftplugin activates Otter automatically for Quarto buffers; ordinary Markdown uses `:QuartoActivate`. The `after/ftplugin` files install the shared document mappings after the regular filetype setup.
+4. **Filter LSP attachment.** Otter provides language-specific code buffers and an `otter-ls[buffer]` bridge on the host document. The coordinator permits that bridge and schedules detachment of whole-document servers after their attachment finishes.
+5. **Filter forwarded diagnostics.** Only Otter's `otter-lang-*` namespaces are accepted in markup buffers. Diagnostics must start in a fenced code body, and their end positions are clipped to that body's last line. Filtering uses copies so Otter's embedded-buffer diagnostics are not modified; lists are rewritten only when changed to avoid repeated diagnostic events.
+6. **Discover new Quarto languages.** For `.qmd` files, Insert-mode entry/exit and saving call `refresh_chunk_languages()`. It compares parsed chunk languages with Otter's existing language buffers and reactivates when one is missing. During this automatic reactivation, the old raft is retained long enough to clear diagnostics for languages omitted from the replacement raft.
+
+Here, an Otter **raft** is the record for one host document and its language-specific buffers. Access to its buffer and diagnostic-namespace tables, along with Otter's client/namespace naming conventions, is localized in `config/quarto.lua`. These assumptions should be reviewed against the pinned upstream implementation when updating Otter.
+
+`config/prose.lua` reports code-body rows using zero-based, inclusive `start_row` and exclusive `end_row` values. Fence delimiters and language labels are outside those ranges. Blink consults `is_prose()` for buffer completion; Noice calls the coordinator's `suppress_lsp_message()` helper, which also extends an existing popup lifetime predicate so it closes when the cursor enters prose.
 
 ### Prose Spelling
 
@@ -208,7 +225,7 @@ Treesitter parsers are configured for:
 - Markdown.
 - Inline Markdown.
 
-Parser installation and highlighting are configured separately. `lua/plugins/treesitter.lua` installs parsers and queries, while `lua/config/autocmds.lua` starts source-file highlighting for the `lua`, `python`, `r`, `sh`, `bash`, and `vim` filetypes. Shell buffers with the `sh` filetype explicitly use the Bash parser. Markdown and Quarto use their dedicated prose and spelling setup.
+Parser installation and highlighting are configured separately. `lua/plugins/treesitter.lua` installs parsers and queries, while `lua/config/autocmds.lua` starts source-file highlighting for the `lua`, `python`, `r`, `sh`, `bash`, and `vim` filetypes. Shell buffers with the `sh` filetype explicitly use the Bash parser. Markdown and Quarto use the document highlighting/spelling setup in `lua/config/quarto.lua`.
 
 If a source parser is unavailable when a buffer opens, highlighting activation is skipped without interrupting file loading. Reopen the buffer after parser installation finishes to retry activation.
 
@@ -221,9 +238,12 @@ Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Tr
 ```text
 ~/.config/nvim/
 ├── after/
-│   └── ftplugin/
-│       ├── markdown.lua
-│       └── quarto.lua
+│   ├── ftplugin/
+│   │   ├── markdown.lua
+│   │   └── quarto.lua
+│   └── queries/
+│       └── markdown/
+│           └── highlights.scm
 ├── init.lua
 ├── lazy-lock.json
 ├── lua/
@@ -233,7 +253,9 @@ Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Tr
 │   │   ├── keymaps.lua
 │   │   ├── lazy.lua
 │   │   ├── markup.lua
-│   │   └── options.lua
+│   │   ├── options.lua
+│   │   ├── prose.lua
+│   │   └── quarto.lua
 │   └── plugins/
 │       ├── lsp.lua
 │       ├── telescope.lua
@@ -250,6 +272,8 @@ Important files:
 - `lua/config/options.lua` contains core Neovim options.
 - `lua/config/keymaps.lua` contains native editor-wide keymaps.
 - `lua/config/markup.lua` owns shared document mappings, installed buffer-locally by the Markdown/Quarto files in `after/ftplugin/`.
+- `lua/config/prose.lua` identifies fenced code-body ranges for the document assistance policy.
+- `lua/config/quarto.lua` coordinates document autocmds, Otter language discovery, LSP/diagnostic guards, and Noice popup filtering.
 - `lua/plugins/` contains plugin specifications, plugin-wide mappings, and plugin-specific configuration.
 - `lazy-lock.json` locks plugin versions for reproducible installs.
 
