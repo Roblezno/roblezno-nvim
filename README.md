@@ -101,6 +101,12 @@ Use `:Lazy` to inspect plugin installation status, `:Mason` to manage external l
 
 The leader key is used for most custom mappings. If you are new to the setup, [which-key.nvim](https://github.com/folke/which-key.nvim) can help you discover available mappings as you type them.
 
+### Keymap Ownership
+
+- `lua/config/keymaps.lua` owns native editor-wide mappings.
+- Plugin-wide actions are declared in the owning plugin's `keys` specification: Telescope, Neo-tree, Slime, and tmux navigation.
+- `after/ftplugin/markdown.lua` and `after/ftplugin/quarto.lua` call `lua/config/markup.lua` to install buffer-local document mappings. The shared module owns their definitions, chunk-insertion helper, and cleanup when a buffer's filetype changes.
+
 ### Navigation and Search
 
 | Keymap | Action |
@@ -123,22 +129,32 @@ The leader key is used for most custom mappings. If you are new to the setup, [w
 | `<C-Down>` | Decrease window height |
 | `<C-Left>` | Decrease window width |
 | `<C-Right>` | Increase window width |
+| `<C-h>` | Navigate to the left Neovim/tmux pane |
+| `<C-j>` | Navigate to the lower Neovim/tmux pane |
+| `<C-k>` | Navigate to the upper Neovim/tmux pane |
+| `<C-l>` | Navigate to the right Neovim/tmux pane |
+| `<C-\>` | Navigate to the previous Neovim/tmux pane |
+
+The pane-navigation mappings above are available in Normal mode. Inside tmux, `<C-h>`, `<C-j>`, `<C-k>`, and `<C-l>` also navigate from Neovim terminal buffers; FZF terminal buffers retain these keys for FZF.
 
 ### Quarto, Markdown, and Code Execution
 
-| Keymap | Action |
-| --- | --- |
-| `<leader>mp` | Insert a Python code chunk |
-| `<leader>mr` | Insert an R code chunk |
-| `<leader>mb` | Insert a Bash code chunk |
-| `<leader>mc` | Run the current Quarto cell |
-| `<leader>ma` | Run current and previous Quarto cells |
-| `<leader>mA` | Run all Quarto cells |
-| `<leader>rs` | Select the Slime target terminal |
-| `<leader>rv` | Send a visual selection to the terminal |
-| `<leader>rl` | Send the current line to the terminal |
+| Keymap | Mode | Buffer scope | Action |
+| --- | --- | --- | --- |
+| `<leader>mp` | Normal | Markdown/Quarto | Insert a Python code chunk |
+| `<leader>mr` | Normal | Markdown/Quarto | Insert an R code chunk |
+| `<leader>mb` | Normal | Markdown/Quarto | Insert a Bash code chunk |
+| `<leader>mc` | Normal | Markdown/Quarto | Run the current cell |
+| `<leader>ma` | Normal | Markdown/Quarto | Run current and previous cells in the current cell's language |
+| `<leader>mA` | Normal | Markdown/Quarto | Run all cells in the current cell's language |
+| `<leader>mt` | Normal | Markdown/Quarto | Toggle Markdown/Quarto rendering |
+| `<leader>rs` | Normal | Any buffer | Select the Slime target terminal |
+| `<leader>rv` | Visual | Any buffer | Send a visual selection to the terminal |
+| `<leader>rl` | Normal | Any buffer | Send the current line to the terminal |
 
 The Quarto workflow is configured to use Slime as the default code runner. In practice, this means that code chunks can be sent from Neovim to a tmux pane, which keeps editing and execution close together inside the terminal.
+
+Quarto buffers automatically activate Otter's code-chunk language support. In ordinary Markdown, run `:QuartoActivate` explicitly to enable that support and initialize the cell runner for the current document. Run it again after adding a previously unused chunk language in Markdown. Chunk insertion and rendering mappings are provided by the filetype setup; chunk execution requires the activated document, with the cursor inside a code cell.
 
 In Markdown and Quarto buffers, programming completion, LSP documentation/signature popups, and diagnostics are restricted to fenced code bodies. Prose, YAML front matter, inline code, and fence delimiters do not receive this assistance. Whole-document language servers are detached; Otter retains language support for code chunks. Completion in ordinary source files and the command line is unchanged.
 
@@ -204,6 +220,10 @@ Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Tr
 
 ```text
 ~/.config/nvim/
+├── after/
+│   └── ftplugin/
+│       ├── markdown.lua
+│       └── quarto.lua
 ├── init.lua
 ├── lazy-lock.json
 ├── lua/
@@ -212,6 +232,7 @@ Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Tr
 │   │   ├── globals.lua
 │   │   ├── keymaps.lua
 │   │   ├── lazy.lua
+│   │   ├── markup.lua
 │   │   └── options.lua
 │   └── plugins/
 │       ├── lsp.lua
@@ -227,8 +248,9 @@ Important files:
 - `init.lua` is the entry point.
 - `lua/config/lazy.lua` bootstraps and configures `lazy.nvim`.
 - `lua/config/options.lua` contains core Neovim options.
-- `lua/config/keymaps.lua` contains custom keymaps.
-- `lua/plugins/` contains plugin specifications and plugin-specific configuration.
+- `lua/config/keymaps.lua` contains native editor-wide keymaps.
+- `lua/config/markup.lua` owns shared document mappings, installed buffer-locally by the Markdown/Quarto files in `after/ftplugin/`.
+- `lua/plugins/` contains plugin specifications, plugin-wide mappings, and plugin-specific configuration.
 - `lazy-lock.json` locks plugin versions for reproducible installs.
 
 ## Customization
@@ -238,7 +260,7 @@ This configuration is intentionally split into small files so that each part is 
 Common changes:
 
 - Edit basic editor behavior in `lua/config/options.lua`.
-- Add or modify keymaps in `lua/config/keymaps.lua`.
+- Add or modify native editor-wide keymaps in `lua/config/keymaps.lua`, plugin-wide mappings in the owning plugin's `keys` specification, and Markdown/Quarto mappings in `lua/config/markup.lua`.
 - Add plugins by creating or editing files in `lua/plugins/`.
 - Change language server configuration in `lua/plugins/lsp.lua`.
 - Change Treesitter parsers in `lua/plugins/treesitter.lua`.

@@ -8,10 +8,37 @@
 
 return {
     'nvim-telescope/telescope.nvim', version = '*',
+    lazy = false, -- Initialize at startup; the keys below declare its entry points.
     dependencies = {
         'nvim-lua/plenary.nvim',
         -- Build the native sorter used by the fzf extension below.
         { 'nvim-telescope/telescope-fzf-native.nvim', build = 'make' },
+    },
+
+    -- Plugin-wide picker mappings; require the picker when its mapping is used.
+    keys = {
+        {
+            "<leader>ff",
+            function() require("telescope.builtin").find_files() end,
+            desc = "Find files",
+        },
+        {
+            "<leader>fn",
+            function()
+                require("telescope.builtin").find_files({ cwd = vim.fn.stdpath("config") })
+            end,
+            desc = "Find Neovim config files",
+        },
+        {
+            "<leader>fg",
+            function() require("telescope.builtin").live_grep() end,
+            desc = "Search text in files",
+        },
+        {
+            "<leader>fb",
+            function() require("telescope.builtin").buffers() end,
+            desc = "Find buffers",
+        },
     },
 
     config = function()
@@ -21,19 +48,5 @@ return {
 
         -- Building fzf-native does not activate it; load it to override the sorters.
         telescope.load_extension('fzf')
-
-        -- Fzf files in the current directory (and subdirectories)
-        vim.keymap.set("n", "<leader>ff", require("telescope.builtin").find_files)
-        -- Edit nvim config no mather where I am
-        vim.keymap.set("n", "<leader>fn", function()
-            require('telescope.builtin').find_files{
-                cwd = vim.fn.stdpath("config")
-            }
-        end)
-        -- Live grep inside files (from the current directory and subdir)
-        vim.keymap.set("n", "<leader>fg", require("telescope.builtin").live_grep)
-
-        -- Fzf buffers
-        vim.keymap.set("n", "<leader>fb", require("telescope.builtin").buffers)
     end
 }

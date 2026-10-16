@@ -1,5 +1,13 @@
--- URLs: https://github.com/quarto-dev/quarto-nvim
---       https://github.com/jmbuhr/otter.nvim
+-- ============================================================================
+-- TITLE: Quarto integration
+-- ABOUT: Code-chunk language support and Slime execution
+-- LINKS:
+--   > Quarto: https://github.com/quarto-dev/quarto-nvim
+--   > Otter: https://github.com/jmbuhr/otter.nvim
+-- ============================================================================
+-- Buffer-local document mappings are owned by config.markup and after/ftplugin.
+-- Quarto activates Otter through its ftplugin; Markdown uses :QuartoActivate.
+
 return {
     {
       "quarto-dev/quarto-nvim",
@@ -67,10 +75,6 @@ return {
           desc = "Activate Quarto LSP support for newly introduced chunk languages",
         })
 
-        local runner = require("quarto.runner")
-        vim.keymap.set("n", "<leader>mc", runner.run_cell,  { desc = "Markdown: Run current cell", silent = true })
-        vim.keymap.set("n", "<leader>ma", runner.run_above, { desc = "Markdown: Run this cell and prev cells", silent = true })
-        vim.keymap.set("n", "<leader>mA", runner.run_all,   { desc = "Markdown: Run all cells", silent = true })
-        end
+      end
     }
 }
