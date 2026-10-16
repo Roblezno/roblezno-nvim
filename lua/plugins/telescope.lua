@@ -8,7 +8,8 @@
 
 return {
     'nvim-telescope/telescope.nvim', version = '*',
-    lazy = false, -- Initialize at startup; the keys below declare its entry points.
+    -- Lazy loads Telescope before running a declared picker key or this command.
+    cmd = 'Telescope',
     dependencies = {
         'nvim-lua/plenary.nvim',
         -- Build the native sorter used by the fzf extension below.
@@ -42,7 +43,7 @@ return {
     },
 
     config = function()
-        -- Initialize Telescope with its defaults before activating extensions.
+        -- Run setup on first load, before the requested picker or command executes.
         local telescope = require('telescope')
         telescope.setup({})
 

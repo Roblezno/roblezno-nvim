@@ -107,6 +107,19 @@ The leader key is used for most custom mappings. If you are new to the setup, [w
 - Plugin-wide actions are declared in the owning plugin's `keys` specification: Telescope, Neo-tree, Slime, and tmux navigation.
 - `after/ftplugin/markdown.lua` and `after/ftplugin/quarto.lua` call `lua/config/markup.lua` to install buffer-local document mappings. The shared module owns their definitions, chunk-insertion helper, and cleanup when a buffer's filetype changes.
 
+### Selective Plugin Loading
+
+Loading decisions are declared in the individual plugin specifications:
+
+| Component | Initialization |
+| --- | --- |
+| Telescope | A configured picker key or `:Telescope` loads it, runs setup, and activates the native fzf extension before the requested action. |
+| Quarto | The `quarto` filetype or a declared Quarto command loads it and applies its options. Ordinary Markdown starts its Otter session explicitly with `:QuartoActivate`. |
+| Native document guards | `config/autocmds.lua` initializes `config/quarto.lua` during startup so the guards are registered before Quarto/Otter activation. |
+| Treesitter | Eager loading is required by the pinned main-branch plugin and supplies parser support for document setup. |
+
+Lazy also loads a plugin when one of its Lua modules is required. The shared document mappings resolve `quarto.runner` when a run action is used; Markdown's document activation is performed through `:QuartoActivate`.
+
 ### Navigation and Search
 
 | Keymap | Action |
@@ -171,8 +184,8 @@ Each chunk language needs its matching Treesitter parser and language server. Ba
 The initialization and event flow is:
 
 1. **Register guards during native configuration.** `lua/config/autocmds.lua` calls `require("config.quarto").setup()` before Lazy loads plugins. The coordinator registers the named `QuartoProse` and `QuartoChunkLanguages` augroups using native APIs. Plugin modules are resolved inside callbacks; language discovery waits for Quarto's configuration table to be available.
-2. **Configure the plugins.** The eagerly loaded `lua/plugins/quarto-md.lua` configures languages, completion, diagnostics, and the Slime runner. Blink and Noice retain their options in their own specifications.
-3. **Set up each document.** On `FileType`, the coordinator enables Markdown highlighting and parser-aware spelling. Quarto's upstream ftplugin activates Otter automatically for Quarto buffers; ordinary Markdown uses `:QuartoActivate`. The `after/ftplugin` files install the shared document mappings after the regular filetype setup.
+2. **Declare on-demand entry points.** `lua/plugins/quarto-md.lua` declares the `quarto` filetype and Quarto commands as loading triggers. Neovim 0.12 detects `.qmd` files natively. On load, Lazy configures Quarto's languages, completion, diagnostics, and Slime runner before dispatching the requested command or replaying `FileType`. Blink and Noice retain their options in their own specifications.
+3. **Set up each document.** For filetype-triggered loading, Lazy's replay runs Quarto's ftplugin after its options are configured, allowing automatic Otter activation. The coordinator's `FileType` handler enables Markdown highlighting and parser-aware spelling. The `after/ftplugin` files install shared document mappings, with native filetype cleanup supporting replay. Ordinary Markdown uses explicit `:QuartoActivate`.
 4. **Filter LSP attachment.** Otter provides language-specific code buffers and an `otter-ls[buffer]` bridge on the host document. The coordinator permits that bridge and schedules detachment of whole-document servers after their attachment finishes.
 5. **Filter forwarded diagnostics.** Only Otter's `otter-lang-*` namespaces are accepted in markup buffers. Diagnostics must start in a fenced code body, and their end positions are clipped to that body's last line. Filtering uses copies so Otter's embedded-buffer diagnostics are not modified; lists are rewritten only when changed to avoid repeated diagnostic events.
 6. **Discover new Quarto languages.** For `.qmd` files, Insert-mode entry/exit and saving call `refresh_chunk_languages()`. It compares parsed chunk languages with Otter's existing language buffers and reactivates when one is missing. During this automatic reactivation, the old raft is retained long enough to clear diagnostics for languages omitted from the replacement raft.

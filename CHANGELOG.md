@@ -3,9 +3,22 @@
 `VERSION` records the current configuration version. Each completed refinement
 step increments the patch version; merge commits do not increment it again.
 Changes accumulate under Unreleased until the completed refinement is summarized
-as version 1.1.0.
+as version 2.0.0.
 
 ## Unreleased
+
+### 1.0.7 — 2026-10-16
+
+#### Changed
+
+- **Plugin loading:** Load Telescope through its picker keys or `:Telescope`,
+  with setup and native fzf activation performed on load.
+- Load Quarto through the `quarto` filetype or its existing commands, with
+  document guards registered at startup and explicit Markdown activation.
+- Document filetype detection, configuration/event ordering, and intentional
+  eager initialization for document guards and Treesitter.
+- Set the final refinement release target to `2.0.0`; intermediate step
+  versions continue through `1.0.10` before the release milestone.
 
 ### 1.0.6 — 2026-10-16
 

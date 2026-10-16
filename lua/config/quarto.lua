@@ -10,8 +10,9 @@
 local M = {}
 local prose = require("config.prose")
 
--- config.autocmds calls setup() before Lazy loads plugins. Registering the
--- handlers only needs native APIs; Quarto/Otter are required inside callbacks.
+-- Keep native document guards eager: config.autocmds calls setup() before Lazy
+-- installs Quarto's filetype/command triggers. Registration only needs native
+-- APIs; Quarto/Otter are resolved inside callbacks after configuration is available.
 -- Otter-specific assumptions stay here: the host bridge is named otter-ls[buf],
 -- forwarded diagnostics use otter-lang-* namespaces, and keeper.rafts[buf]
 -- tracks language buffers and their diagnostic namespaces. Review these details
@@ -96,8 +97,8 @@ end
 --- Discover newly introduced chunk languages in an automatically managed Quarto buffer.
 ---@param bufnr integer Host buffer from an InsertEnter/InsertLeave/BufWritePost event.
 local function refresh_chunk_languages(bufnr)
-    -- Registration happens before plugin setup. Quarto owns this configuration
-    -- table; wait for it to exist before resolving any plugin modules.
+    -- A filetype/command trigger loads Quarto and supplies its configuration.
+    -- Wait for that table before resolving plugin modules for language discovery.
     local config = _G.QuartoConfig
     if vim.bo[bufnr].filetype ~= "quarto" or not config or not config.lspFeatures.enabled then
         return
