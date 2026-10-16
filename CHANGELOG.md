@@ -7,6 +7,18 @@ as version 1.1.0.
 
 ## Unreleased
 
+### 1.0.3 — 2026-10-16
+
+#### Fixed
+
+- **Autocommands:** Register the last-cursor and yank-highlight descriptions as
+  autocmd metadata instead of assigning a global `desc` inside their callbacks.
+
+#### Changed
+
+- Clarify comments about saved cursor positions, valid buffer lines, and the
+  yank-highlight autocmd's buffer scope.
+
 ### 1.0.2 — 2026-10-16
 
 #### Fixed
