@@ -10,6 +10,7 @@ return {
   dependencies = { 'rafamadriz/friendly-snippets' },
   version = "1.*",
   opts = {
+    -- In document buffers, allow completion only inside fenced code bodies.
     enabled = function()
       return not require("config.prose").is_prose()
     end,

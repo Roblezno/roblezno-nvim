@@ -7,10 +7,12 @@
 -- ============================================================================
 -- Buffer-local document mappings are owned by config.markup and after/ftplugin.
 -- Quarto activates Otter through its ftplugin; Markdown uses :QuartoActivate.
+-- config.quarto registers document guards and language discovery before plugin setup.
 
 return {
     {
       "quarto-dev/quarto-nvim",
+      lazy = false, -- Configure language features before Quarto's ftplugin activates Otter.
       dependencies = {
         "jmbuhr/otter.nvim",
        -- "nvim-lua/plenary.nvim",
@@ -37,42 +39,6 @@ return {
             ft_runners = {},
             -- never_run = {"yaml"}
           },
-        })
-
-        local chunk_group = vim.api.nvim_create_augroup("QuartoChunkLanguages", {})
-        vim.api.nvim_create_autocmd({ "InsertEnter", "InsertLeave", "BufWritePost" }, {
-          group = chunk_group,
-          pattern = "*.qmd",
-          callback = function(args)
-            if vim.bo[args.buf].filetype ~= "quarto" or not QuartoConfig.lspFeatures.enabled then
-              return
-            end
-            local keeper = require("otter.keeper")
-            local raft = keeper.rafts[args.buf]
-            if not raft then
-              vim.api.nvim_buf_call(args.buf, quarto.activate)
-              return
-            end
-
-            local chunks = keeper.extract_code_chunks(args.buf)
-            for _, language in ipairs(QuartoConfig.lspFeatures.languages) do
-              if chunks[language] and not raft.buffers[language] then
-                -- Reactivation discovers new languages and reuses existing buffers/clients.
-                vim.api.nvim_buf_call(args.buf, quarto.activate)
-                -- Clear forwarded diagnostics for languages omitted by the rebuilt raft.
-                for active_language, buffer in pairs(raft.buffers) do
-                  if not keeper.rafts[args.buf].buffers[active_language] then
-                    local namespace = raft.diagnostics_namespaces[buffer]
-                    if namespace then
-                      vim.diagnostic.reset(namespace, args.buf)
-                    end
-                  end
-                end
-                return
-              end
-            end
-          end,
-          desc = "Activate Quarto LSP support for newly introduced chunk languages",
         })
 
       end

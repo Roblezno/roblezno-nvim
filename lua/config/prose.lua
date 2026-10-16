@@ -6,11 +6,22 @@
 
 local M = {}
 
+--- Identify the document filetypes governed by the code/prose assistance policy.
+---@param bufnr integer? Buffer handle; nil or 0 means the current buffer.
+---@return boolean
 function M.is_markup(bufnr)
   local filetype = vim.bo[bufnr or 0].filetype
   return filetype == "markdown" or filetype == "quarto"
 end
 
+---@class ProseCodeChunk
+---@field start_row integer First code-body row, zero-based and inclusive.
+---@field end_row integer Row after the code body, zero-based and exclusive.
+
+--- Find fenced code bodies, excluding fence delimiters and language annotations.
+--- Return an empty list if the Markdown parser/tree is unavailable.
+---@param bufnr integer? Buffer handle; nil or 0 means the current buffer.
+---@return ProseCodeChunk[]
 function M.code_chunks(bufnr)
   bufnr = bufnr or 0
   local ok, trees = pcall(function()
@@ -50,6 +61,11 @@ function M.code_chunks(bufnr)
   return chunks
 end
 
+--- Treat every row outside a fenced code body as prose in markup documents.
+--- An unavailable parser therefore keeps programming assistance quiet throughout.
+---@param bufnr integer? Buffer handle; nil or 0 means the current buffer.
+---@param row integer? Zero-based row; defaults to the current window's cursor row.
+---@return boolean prose False for ordinary source buffers or fenced code bodies.
 function M.is_prose(bufnr, row)
   if not M.is_markup(bufnr) then
     return false

@@ -1,5 +1,7 @@
 ; extends
 
+; config.quarto starts the Markdown highlighter for Markdown and Quarto buffers.
+; Extend upstream captures so native English/Spanish spelling follows prose.
 (inline) @spell
 
 ; Override spelling captures from injected code comments and strings.

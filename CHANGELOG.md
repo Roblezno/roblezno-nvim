@@ -7,6 +7,18 @@ as version 1.1.0.
 
 ## Unreleased
 
+### 1.0.6 — 2026-10-16
+
+#### Changed
+
+- **Quarto workflow:** Centralize document highlighting/spelling, LSP and
+  diagnostic guards, and chunk-language discovery in `config/quarto.lua`,
+  registered before plugin setup.
+- Localize Otter raft access, client/namespace conventions, reactivation, and
+  stale-diagnostic cleanup. Share Noice popup filtering through the coordinator.
+- Annotate syntax-context helpers and document initialization order, exclusive
+  chunk boundaries, missing-parser behavior, and the Markdown activation policy.
+
 ### 1.0.5 — 2026-10-16
 
 #### Fixed
