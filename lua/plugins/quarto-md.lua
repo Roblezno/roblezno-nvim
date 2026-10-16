@@ -12,12 +12,30 @@
 return {
     {
       "quarto-dev/quarto-nvim",
-      lazy = false, -- Configure language features before Quarto's ftplugin activates Otter.
+      -- Neovim 0.12 detects .qmd natively. Lazy configures Quarto before replaying
+      -- FileType, so its ftplugin activates Otter with the configured languages.
+      ft = "quarto",
+      -- Expose the pinned plugin's commands before loading, including explicit
+      -- Markdown activation. Commands are defined in plugin/quarto.lua and setup().
+      cmd = {
+        "QuartoPreview",
+        "QuartoPreviewNoWatch",
+        "QuartoUpdatePreview",
+        "QuartoClosePreview",
+        "QuartoActivate",
+        "QuartoHelp",
+        "QuartoSend",
+        "QuartoSendAbove",
+        "QuartoSendBelow",
+        "QuartoSendAll",
+        "QuartoSendRange",
+        "QuartoSendLine",
+      },
       dependencies = {
         "jmbuhr/otter.nvim",
        -- "nvim-lua/plenary.nvim",
         "neovim/nvim-lspconfig",
-        "nvim-treesitter/nvim-treesitter",
+        "nvim-treesitter/nvim-treesitter", -- Its own specification keeps it eagerly loaded.
       },
       config = function()
         local quarto = require("quarto")
