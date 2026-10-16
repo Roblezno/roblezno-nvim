@@ -1,11 +1,26 @@
 # Changelog
 
-`VERSION` records the current configuration version. Each completed refinement
-step increments the patch version; merge commits do not increment it again.
+`VERSION` records the current configuration version. Intermediate patch numbers
+match refinement step numbers; merge commits do not increment them again.
 Changes accumulate under Unreleased until the completed refinement is summarized
 as version 2.0.0.
 
 ## Unreleased
+
+### 1.0.10 — 2026-10-17
+
+#### Changed
+
+- Reconcile the README with startup order, mapping ownership, pinned Treesitter
+  and Mason requirements, and language support including Nextflow and external R.
+- Explain analysis versus tmux execution environments, current-language chunk
+  execution, plugin restoration/updates, and existing diagnostics/session actions.
+- Add missing plugin documentation headers and correct descriptions of
+  lazy.nvim, Mason, search highlighting, rendering, and integration ownership.
+- Retain inactive customization examples with explicit labels and replace copied
+  placeholders with explanations of the active configuration.
+- Defer Gitsigns to version `2.1.0`, on hold. Skip the step 9 intermediate version
+  and finalize the existing refinements as `2.0.0` after this documentation step.
 
 ### 1.0.8 — 2026-10-16
 

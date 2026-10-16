@@ -15,17 +15,16 @@ return {
         { "<leader>rl", "<cmd>SlimeSend<CR>", desc = "Run current line in terminal", silent = true },
       },
       init = function()
-        -- We need to specify the target terminal, in this case tmux terms
+        -- Send to an existing tmux pane; the interpreter is started there separately.
         vim.g.slime_target = "tmux"
 
         -- Disabling mappings (want to use custom ones)
         vim.g.slime_no_mappings = true
         
-        -- (Opcional) won't ask for term to run code if there's only 1
-        -- for nvim terms we use jobid
+        -- Inactive example for Slime's Neovim-terminal target, which uses a job ID.
         --vim.g.slime_default_config = { jobid = 1 }
         
-        -- For tmux terms we use socket_name and target_pane
+        -- tmux uses a socket and pane token; <leader>rs can select another target.
         vim.g.slime_default_config = { socket_name = "default", target_pane = "{last}" }
       end,
 

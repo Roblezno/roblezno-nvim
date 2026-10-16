@@ -1,22 +1,24 @@
 -- ============================================================================
 -- TITLE: LSP configuration
--- ABOUT: A mix between native lsp management and external plugins.
--- > lspconfig handles the configuration of the lsp in the client side.
--- > Mason comunicates with the servers. It allows me to install and manage 
--- LSP servers, DAP servers, linters and formatter easily inside NeoVim, 
--- without the need of installing them manually on my comuter.
--- > mason-lsp config acts a as link between lspconfig and mason.
+-- ABOUT: Native LSP clients with shared server definitions and tool installation
+-- > Neovim's native LSP client starts and communicates with language servers.
+-- > nvim-lspconfig provides server definitions; overrides are configured below.
+-- > Mason installs external tools and adds their executables to Neovim's PATH.
+-- > mason-lspconfig installs listed servers and enables Mason-managed servers.
 -- LINKS
 --  > lspconfig: https://github.com/neovim/nvim-lspconfig
 --  > mason: https://github.com/mason-org/mason.nvim
 --  > mason-lspconfig: https://github.com/mason-org/mason-lspconfig.nvim
+--  > R language server: https://github.com/REditorSupport/languageserver
+--  > Ruff: https://docs.astral.sh/ruff/editors/
 -- ============================================================================
 
 
 return {
-    -- NOTE: Recommended setup from mason-lspconfig
+    -- Dependencies initialize Mason and provide native server definitions.
     "mason-org/mason-lspconfig.nvim",
-    -- event = {"BufReadPre", "BufNewFile"}, -- lsp load only when on a buffer
+    -- Inactive loading alternative; this specification currently starts eagerly.
+    -- event = {"BufReadPre", "BufNewFile"}, -- defer setup until opening a buffer
     dependencies = {
         "neovim/nvim-lspconfig",
         {
@@ -29,7 +31,7 @@ return {
         },
     },
     opts = {
-        -- Define auto install / enable languages (only from Mason)
+        -- Install these servers through Mason; automatic enabling uses its default.
         ensure_installed = {
             "lua_ls",
             "vimls",
@@ -37,11 +39,12 @@ return {
             "ruff",
             "bashls",
             "nextflow_ls",
+            -- Inactive alternative: R is currently managed outside Mason.
             --"r_language_server",
         },
     },
     config = function(_, opts)
-        -- NOTE: Python lsp opts
+        -- Pyright owns Python analysis; Ruff supplies linting, actions, and formatting.
         vim.lsp.config("pyright", {
             settings = {
                 pyright = {
@@ -57,18 +60,17 @@ return {
             end,
         })
 
-        -- NOTE: Nextflow lsp opts
+        -- Use vim-language-nextflow syntax instead of LSP semantic highlighting.
         vim.lsp.config("nextflow_ls", {
             on_attach = function (client)
                 client.server_capabilities.semanticTokensProvider = nil
             end,
         })
 
-        -- NOTE: R lsp config
-
-        -- Cargo la tabla opts al setup de mason-lspconfig manualmente
+        -- Apply the installation list and enable Mason-managed server definitions.
         require("mason-lspconfig").setup(opts)
-        -- Habilito R para que trabaje con el R del sistema no el de Mason
+        -- Enable externally managed R; nvim-lspconfig resolves R from Neovim's PATH.
+        -- That R installation must be able to load its languageserver package.
         vim.lsp.enable("r_language_server")
     end,
 }

@@ -1,3 +1,9 @@
+-- ============================================================================
+-- TITLE: Auto-session
+-- ABOUT: Project sessions with explicit restore, save, and delete actions
+-- URL: https://github.com/rmagatti/auto-session
+-- ============================================================================
+
 return {
   "rmagatti/auto-session",
   lazy = false,
@@ -13,6 +19,7 @@ return {
   ---@type AutoSession.Config
   opts = {
       auto_restore = false, -- disables restoring auto session on start
+    -- Inactive customization examples for excluded directories and log verbosity.
     -- suppressed_dirs = { "~/", "~/Projects", "~/Downloads", "/" },
     -- log_level = 'debug',
   },

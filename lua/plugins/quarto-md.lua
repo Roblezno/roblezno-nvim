@@ -33,6 +33,7 @@ return {
       },
       dependencies = {
         "jmbuhr/otter.nvim",
+        -- Inactive dependency example retained for reference.
        -- "nvim-lua/plenary.nvim",
         "neovim/nvim-lspconfig",
         "nvim-treesitter/nvim-treesitter", -- Its own specification keeps it eagerly loaded.
@@ -42,7 +43,7 @@ return {
         quarto.setup({
           lspFeatures = {
             languages = { "r", "python", "bash" },
-            chunks = "all", -- lsp enabled for all code blocks
+            chunks = "all", -- Recognize all fence styles for the configured languages.
             diagnostics = {
               enabled = true,
               triggers = { "BufWritePost" },
@@ -55,6 +56,7 @@ return {
             enabled = true,
             default_method = "slime",
             ft_runners = {},
+            -- Inactive override example for languages the runner should skip.
             -- never_run = {"yaml"}
           },
         })

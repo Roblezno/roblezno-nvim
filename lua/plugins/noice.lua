@@ -9,7 +9,7 @@ return
   "folke/noice.nvim",
   event = "VeryLazy",
   opts = {
-    -- add any options here
+    -- Route LSP popups through the shared Markdown/Quarto prose policy.
       routes = {
           {
               filter = {
@@ -24,19 +24,20 @@ return
           },
       },
       lsp = {
-    -- override markdown rendering so that **cmp** and other plugins use **Treesitter**
+        -- Render native LSP Markdown through Noice's Treesitter-backed UI.
         override = {
           ["vim.lsp.util.convert_input_to_markdown_lines"] = true,
           ["vim.lsp.util.stylize_markdown"] = true,
+          -- Inactive integration example for nvim-cmp; this configuration uses Blink.
           --  ["cmp.entry.get_documentation"] = true, -- requires hrsh7th/nvim-cmp
         },
       },
-      -- you can enable a preset for easier configuration
+      -- Combine selected UI presets with the explicit hover border below.
       presets = {
-          bottom_search = false, -- use a classic bottom cmdline for search
+          bottom_search = false, -- Disable the bottom-search preset.
           command_palette = true, -- position the cmdline and popupmenu together
           long_message_to_split = true, -- long messages will be sent to a split
-          inc_rename = false, -- enables an input dialog for inc-rename.nvim
+          inc_rename = false, -- Keep the optional inc-rename integration disabled.
           lsp_doc_border = true, -- add a border to hover docs and signature help
       },
 
@@ -51,11 +52,9 @@ return
       }
   },
   dependencies = {
-    -- if you lazy-load any plugin below, make sure to add proper `module="..."` entries
+    -- Lazy loads these dependencies before configuring Noice.
     "MunifTanjim/nui.nvim",
-    -- OPTIONAL:
-    --   `nvim-notify` is only needed, if you want to use the notification view.
-    --   If not available, we use `mini` as the fallback
+    -- Notification view backend; its own specification supplies default options.
     "rcarriga/nvim-notify",
   },
 

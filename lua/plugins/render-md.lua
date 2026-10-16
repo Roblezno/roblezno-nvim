@@ -8,16 +8,17 @@ return {
     {
         'MeanderingProgrammer/render-markdown.nvim',
         dependencies = { 'nvim-treesitter/nvim-treesitter', 'nvim-tree/nvim-web-devicons' },
-        ft = { 'markdown', 'quarto' }, -- Cargar solo en estos archivos
+        ft = { 'markdown', 'quarto' }, -- Load when opening either document filetype.
         opts = {
             file_types = { 'markdown', 'quarto' },
-            -- Prevents line from de-rendering in markdown files while in "visual mode"
+            -- Keep decorations on the cursor row; native conceal is configured below.
             anti_conceal = {
                 enabled = false
             },
             heading = {
-                backgrounds = {}, -- Disables heading background
+                backgrounds = {}, -- Disable heading background highlights.
             },
+            -- Inactive customization example: code-block borders, width, and padding.
 --            code = {
 --                border = 'single',
 --                width = "block",
@@ -28,10 +29,9 @@ return {
 --            },
             win_options = {
                 concealcursor = {
-                    -- 'n' = Normal, 'v' = Visual, 'i' = Insert, 'c' = Command
-                    -- Usar 'nc' mantiene la línea renderizada al navegar (Normal), pero 
-                    -- te muestra el markdown crudo si entras a editar (Insert).
-                    -- Si quieres que esté renderizado SIEMPRE (incluso al editar), usa 'nvic'.
+                    -- Keep cursor-line text concealed in Normal and command-line modes.
+                    -- Insert/Visual modes can reveal it; see :help 'concealcursor'.
+                    -- Reference alternative: 'nvic' also conceals it in those modes.
                     rendered = 'nc', 
                 },
             },

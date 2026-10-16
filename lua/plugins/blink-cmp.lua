@@ -1,6 +1,6 @@
 -- ============================================================================
 -- TITLE: Blink-cmp
--- ABOUT: Auto completion options menu for the lsp
+-- ABOUT: LSP, path, snippet, and buffer completion with document prose gating
 -- LINKS
 --  > github: https://github.com/saghen/blink.cmp
 -- ============================================================================
@@ -15,7 +15,8 @@ return {
       return not require("config.prose").is_prose()
     end,
 
-    -- 'default' (recommended) for mappings similar to built-in completions (C-y to accept)
+    -- Reference: available presets and their shared controls.
+    -- 'default' (selected below) uses built-in-style completion keys (C-y to accept)
     -- 'super-tab' for mappings similar to vscode (tab to accept)
     -- 'enter' for enter to accept
     -- 'none' for no mappings
@@ -31,12 +32,13 @@ return {
     -- NOTE: Check https://cmp.saghen.dev/configuration/keymap.html for more info
     keymap = { 
         preset = 'default',
+        -- Inactive customization examples; the active preset supplies the mappings.
 --        ['<Tab>'] = { 'select_next', 'fallback' },
 --        ['<S-Tab>'] = { 'select_prev', 'fallback' },
 --        ['<S-CR>'] = { 'accept', 'fallback' },
     },
 
-    signature = { enabled = false },
+    signature = { enabled = false }, -- Noice owns LSP signature popups.
 
     appearance = {
         use_nvim_cmp_as_default = true,
