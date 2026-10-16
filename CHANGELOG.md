@@ -7,6 +7,23 @@ as version 2.0.0.
 
 ## Unreleased
 
+### 1.0.8 — 2026-10-16
+
+#### Implemented
+
+- **Discoverability:** Add which-key labels for Find, Buffers, Splits,
+  Markdown/Quarto, Run, Trouble, Sessions, and Code.
+- Add Telescope shortcuts for recent files, the word under the cursor, help
+  tags, and keymaps, plus buffer-local Quarto preview and close-preview actions.
+- Add manual native LSP source formatting: Ruff for Python and a single
+  formatting provider for other source buffers, with selection when needed.
+- Add an on-demand shortcut for Neovim's bundled undo-tree viewer.
+
+#### Changed
+
+- Document the accepted shortcuts, formatting scope and provider selection,
+  undo history, and Neovim 0.12's native Visual-mode syntax selection.
+
 ### 1.0.7 — 2026-10-16
 
 #### Changed

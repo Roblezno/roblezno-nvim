@@ -40,6 +40,27 @@ return {
             function() require("telescope.builtin").buffers() end,
             desc = "Find buffers",
         },
+        -- These discovery pickers share the same on-demand loading boundary.
+        {
+            "<leader>fr",
+            function() require("telescope.builtin").oldfiles() end,
+            desc = "Find recent files",
+        },
+        {
+            "<leader>fw",
+            function() require("telescope.builtin").grep_string() end,
+            desc = "Search word under cursor",
+        },
+        {
+            "<leader>fh",
+            function() require("telescope.builtin").help_tags() end,
+            desc = "Find help tags",
+        },
+        {
+            "<leader>fk",
+            function() require("telescope.builtin").keymaps() end,
+            desc = "Find keymaps",
+        },
     },
 
     config = function()
