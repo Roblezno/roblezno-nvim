@@ -9,8 +9,8 @@
 return {
     "rebelot/kanagawa.nvim",
     lazy = false,
-    priority = 1000,
-    -- Optional config
+    priority = 1000, -- Apply the colorscheme before other startup plugins.
+    -- Active theme options; the floating-window override example below is inactive.
     opts = {
         transparent = false, 
         commentStyle = { italic = true },
@@ -28,7 +28,7 @@ return {
 
 
         
-        -- Transparent floating windows
+        -- Inactive customization example: transparent floating windows and menus.
 --        overrides = function(colors)
 --            local theme = colors.theme
 --            return {
@@ -57,8 +57,7 @@ return {
 --        end,
 
     },
-    -- Theme must be initialized with config func
-    -- Passing opt params
+    -- Lazy passes opts here; configure the palette before applying the colorscheme.
     config = function(_, opts)
         -- Setting up theme with custom opts
         require("kanagawa").setup(opts) 

@@ -1,8 +1,11 @@
 -- ============================================================================
 -- TITLE: Treesitter parsers
--- ABOUT: Install parsers and queries; config.autocmds enables highlighting
+-- ABOUT: Install parsers/queries; config.autocmds and config.quarto start highlighters
 -- URL: https://github.com/nvim-treesitter/nvim-treesitter#setup
 -- ============================================================================
+
+-- The pinned main revision requires Neovim 0.12+, a C compiler, tar, curl,
+-- and tree-sitter-cli 0.26.1+ installed through a package manager rather than npm.
 
 return {
   'nvim-treesitter/nvim-treesitter',

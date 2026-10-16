@@ -32,14 +32,16 @@ The result is a Neovim setup that aims to be:
 ## Features
 
 - Plugin management with [lazy.nvim](https://github.com/folke/lazy.nvim).
-- Language Server Protocol support through [Mason](https://github.com/mason-org/mason.nvim), [mason-lspconfig](https://github.com/mason-org/mason-lspconfig.nvim), and [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig).
+- Native Neovim LSP support, using [nvim-lspconfig](https://github.com/neovim/nvim-lspconfig) for server definitions and [Mason](https://github.com/mason-org/mason.nvim)/[mason-lspconfig](https://github.com/mason-org/mason-lspconfig.nvim) for tool installation and enabling installed servers.
 - Completion powered by [blink.cmp](https://github.com/Saghen/blink.cmp).
 - Treesitter support for Lua, Python, R, Bash, Vim, Markdown, and inline Markdown.
+- Nextflow filetype/syntax support and language-server integration.
 - Quarto and Markdown workflow support through [quarto-nvim](https://github.com/quarto-dev/quarto-nvim).
 - Native English/Spanish spell-checking for Markdown and Quarto prose, without automatic completion popups.
 - Code execution from Quarto/Markdown documents using [vim-slime](https://github.com/jpalardy/vim-slime) and tmux.
 - File search, text search, and buffer navigation with [Telescope](https://github.com/nvim-telescope/telescope.nvim).
 - File explorer support with [Neo-tree](https://github.com/nvim-neo-tree/neo-tree.nvim).
+- Discoverable which-key groups, manual source formatting, and Neovim's bundled undo-tree viewer.
 - tmux-aware navigation for a terminal-centered workflow.
 - Diagnostics and quickfix improvements with Trouble.
 - Session management, todo comments, statusline, notifications, and UI improvements.
@@ -47,20 +49,27 @@ The result is a Neovim setup that aims to be:
 
 ## Requirements
 
-Required:
+Required for this configuration on Linux:
 
 - [Neovim](https://neovim.io/) 0.12 or newer.
 - [Git](https://git-scm.com/).
 - [ripgrep](https://github.com/BurntSushi/ripgrep), used by Telescope for text search.
 - [fd](https://github.com/sharkdp/fd), used by Telescope for file search.
-- `make`, required to build `telescope-fzf-native`.
+- `make` and a C compiler such as GCC or Clang, used to build `telescope-fzf-native` and Treesitter parsers.
+- `curl` and GNU `tar`, used for parser downloads and extraction.
+- [`tree-sitter-cli`](https://github.com/tree-sitter/tree-sitter/tree/master/crates/cli) **0.26.1 or newer**, installed through a package manager rather than npm, as required by the pinned Treesitter revision.
+- `unzip` and `gzip`, used by Mason's package installers alongside the tools above.
+- Node.js and npm for the configured Pyright, Vimscript, and Bash language servers.
 
-Recommended:
+The [pinned Treesitter requirements](https://github.com/nvim-treesitter/nvim-treesitter/blob/910fdf6f49e9dee7e7257c7d11a76b040fdfb9de/README.md#requirements) are the basis for the Neovim, compiler, and CLI requirements above. Mason packages can have additional language-specific requirements; see the language-support table below and `:help mason-requirements`.
 
-- [tmux](https://github.com/tmux/tmux), especially for the Slime-based code execution workflow.
-- A Nerd Font, for better icon rendering in the UI.
-- Python and R, if you plan to use the data analysis and bioinformatics parts of the setup.
-- The Quarto CLI, if you work with `.qmd` files.
+Workflow-specific requirements:
+
+- [tmux](https://github.com/tmux/tmux) for the configured Slime target and cross-pane navigation. The tmux side of [vim-tmux-navigator](https://github.com/christoomey/vim-tmux-navigator#installation) needs its corresponding configuration.
+- The [Quarto CLI](https://quarto.org/docs/get-started/) for document preview/rendering.
+- Python, R, or Bash and the project's packages in the terminal used to execute code. R also needs the `languageserver` package for editor assistance.
+- Java **17 or newer** for the configured Nextflow language server; the Nextflow CLI and workflow dependencies are needed separately to execute pipelines.
+- A Nerd Font is recommended for the configured icons.
 
 ## Installation
 
@@ -85,7 +94,9 @@ Start Neovim:
 nvim
 ```
 
-On the first launch, `lazy.nvim` will automatically bootstrap itself and install the configured plugins.
+On the first launch, `lazy.nvim` bootstraps itself and installs missing plugins using the recorded revisions where available. Treesitter requests the configured parsers asynchronously, and Mason requests the servers listed in `lua/plugins/lsp.lua`. The external R package and workflow runtimes are installed separately.
+
+`lazy-lock.json` records plugin commits. On an existing installation, `:Lazy restore` restores those revisions. Mason-managed tool versions and project language environments are separate from that plugin lockfile.
 
 After installation, useful commands are:
 
@@ -97,9 +108,19 @@ After installation, useful commands are:
 
 Use `:Lazy` to inspect plugin installation status, `:Mason` to manage external language tools, and `:checkhealth` to diagnose missing dependencies.
 
+## Startup and Ownership
+
+1. `init.lua` loads `config.lazy`, which bootstraps lazy.nvim and adds it to the runtime path.
+2. Native configuration loads in this order: `config.globals`, `config.autocmds`, `config.options`, then `config.keymaps`. This sets the leaders and registers document guards before plugin setup.
+3. Lazy imports `lua/plugins/`, configures startup plugins, and registers on-demand triggers. The Kanagawa specification has priority `1000` so the colorscheme is initialized early.
+4. Filetype events start the configured highlighters and run filetype setup. The Markdown/Quarto `after/ftplugin` files install shared buffer-local mappings with cleanup for filetype changes.
+5. `config.quarto` coordinates document events, Otter integration, and Noice popup policy. `config.prose` supplies syntax context, while each plugin specification owns its options.
+
+This is a personal configuration using the lazy.nvim plugin manager. The document-specific event sequence is detailed under **Document Workflow Internals**.
+
 ## Usage
 
-The leader key is used for most custom mappings. If you are new to the setup, [which-key.nvim](https://github.com/folke/which-key.nvim) can help you discover available mappings as you type them.
+Both `<leader>` and `<localleader>` are **Space**, configured in `lua/config/globals.lua`. If you are new to the setup, [which-key.nvim](https://github.com/folke/which-key.nvim) can help you discover available mappings as you type them.
 
 ### Keymap Ownership
 
@@ -177,6 +198,24 @@ Moving the cursor through the tree changes the source buffer to the correspondin
 
 The pane-navigation mappings above are available in Normal mode. Inside tmux, `<C-h>`, `<C-j>`, `<C-k>`, and `<C-l>` also navigate from Neovim terminal buffers; FZF terminal buffers retain these keys for FZF.
 
+### Diagnostics and Sessions
+
+These Normal-mode actions belong to `lua/plugins/trouble.lua` and `lua/plugins/auto-session.lua`:
+
+| Keymap | Action |
+| --- | --- |
+| `<leader>tx` | Toggle workspace diagnostics |
+| `<leader>tX` | Toggle current-buffer diagnostics |
+| `<leader>ts` | Toggle document symbols |
+| `<leader>tl` | Toggle LSP definitions/references in a right-side Trouble view |
+| `<leader>tL` | Toggle the location list |
+| `<leader>tQ` | Toggle the quickfix list |
+| `<leader>wr` | Restore the current working directory's session |
+| `<leader>ws` | Save the current working directory's session |
+| `<leader>wd` | Delete the current working directory's session |
+
+Auto-session's startup restoration is disabled; `<leader>wr` provides the explicit restore action.
+
 ### Quarto, Markdown, and Code Execution
 
 | Keymap | Mode | Buffer scope | Action |
@@ -249,13 +288,38 @@ If a dictionary is missing, Neovim may ask permission to download it when spelli
 
 ## Language Support
 
-The configuration currently installs or enables support for:
+The declared language support is summarized below. Listed Treesitter parsers are installed by `lua/plugins/treesitter.lua`; server definitions and overrides come from nvim-lspconfig and `lua/plugins/lsp.lua`.
 
-- Lua through `lua_ls`.
-- Vimscript through `vimls`.
-- Python through `pyright` and `ruff`.
-- R through `r_language_server`.
-- Bash through `bashls`.
+| Language / filetype | Parser or syntax | Language server | Server installation | Runtime / environment |
+| --- | --- | --- | --- | --- |
+| Lua (`lua`) | `lua` | `lua_ls` | Mason: `lua-language-server` | LuaLS package; Neovim executes this configuration |
+| Vimscript (`vim`) | `vim` | `vimls` | Mason: `vim-language-server` | Node.js/npm for the server |
+| Python (`python`) | `python` | `pyright`, `ruff` | Mason: `pyright`, `ruff` | Node.js/npm for Pyright; the project's Python and packages for analysis/execution |
+| R (`r`) | `r` | `r_language_server` | R package `languageserver`, outside Mason | The intended R executable and its package library |
+| Bash / shell (`bash`, `sh`) | `bash` | `bashls` | Mason: `bash-language-server` | Node.js/npm for the server; Bash for execution |
+| Nextflow (`nextflow`) | Vim syntax from `vim-language-nextflow`; no configured Treesitter parser | `nextflow_ls` | Mason: `nextflow-language-server` | Java 17+ for the server; Nextflow and workflow dependencies for execution |
+| Markdown / Quarto (`markdown`, `quarto`) | `markdown`, `markdown_inline` | Otter forwards the R/Python/Bash servers for code chunks | Same server installations as the source-language rows | Quarto CLI for preview; the selected interpreter for chunk execution |
+
+Mason installs the six servers listed in `ensure_installed`. Its mason-lspconfig integration enables Mason-installed servers by default through `vim.lsp.enable()`. Neovim's native client handles LSP communication; Mason is the tool installer. R is enabled explicitly because its server is managed outside Mason.
+
+Nextflow's filetype detection and Vim syntax come from `lua/plugins/nextflow.lua`. The language server's semantic-token provider is disabled in `lua/plugins/lsp.lua`, leaving syntax highlighting to that plugin. The pinned [Nextflow server definition](https://github.com/neovim/nvim-lspconfig/blob/3e8d598d3b5f8338a41699c436e5fa11d2666cf0/lsp/nextflow_ls.lua) documents the Java 17+ requirement.
+
+### R Language Server
+
+Install `languageserver` from the R installation intended for editor assistance:
+
+```r
+install.packages("languageserver")
+```
+
+The [pinned server definition](https://github.com/neovim/nvim-lspconfig/blob/3e8d598d3b5f8338a41699c436e5fa11d2666cf0/lsp/r_language_server.lua) starts `R --no-echo -e 'languageserver::run()'`. `R` is resolved from Neovim's `PATH`; it is not hard-coded to a system path. For the intended system-R workflow, make that R executable available to Neovim and install the package in a library it can find.
+
+### Analysis and Execution Environments
+
+- **Editor assistance:** language-server processes inherit Neovim's environment, with Mason's executable directory prepended to `PATH`. Python analysis also follows Pyright's project/workspace settings. This configuration does not select a project-specific Python interpreter.
+- **Code execution:** Slime sends text to an existing tmux pane. The configured defaults are socket `default` and target `{last}`; use `<leader>rs` to select the destination and start the required Python, R, or Bash session there.
+- **Matching environments:** choose the intended project environment for analysis and start the matching interpreter with its packages in the target pane. Selecting a Slime pane does not change the language servers' interpreter or package environment.
+- **Mixed-language documents:** the current-cell, run-above, and run-all shortcuts use the current cell's language by default. Use a suitable interpreter in the selected pane; the mappings do not switch between language-specific REPLs automatically.
 
 For Python, Pyright provides type checking and language intelligence, while Ruff provides lint diagnostics, code actions, import organization, and formatting. Ruff follows project-level configuration from `pyproject.toml`, `ruff.toml`, or `.ruff.toml`; fixes and formatting are not run automatically on save.
 
@@ -314,6 +378,7 @@ These mappings use the buffer's Treesitter parser. When no parser is available, 
 │       └── markdown/
 │           └── highlights.scm
 ├── init.lua
+├── CHANGELOG.md
 ├── lazy-lock.json
 ├── lua/
 │   ├── config/
@@ -331,13 +396,16 @@ These mappings use the buffer's Treesitter parser. When no parser is available, 
 │       ├── treesitter.lua
 │       ├── quarto-md.lua
 │       └── ...
-└── README.md
+├── README.md
+└── VERSION
 ```
 
 Important files:
 
 - `init.lua` is the entry point.
 - `lua/config/lazy.lua` bootstraps and configures `lazy.nvim`.
+- `lua/config/globals.lua` defines the leaders before mappings are registered.
+- `lua/config/autocmds.lua` owns native editor events and initializes the document coordinator.
 - `lua/config/options.lua` contains core Neovim options.
 - `lua/config/keymaps.lua` contains native editor-wide keymaps.
 - `lua/config/markup.lua` owns shared document mappings, installed buffer-locally by the Markdown/Quarto files in `after/ftplugin/`.
@@ -345,6 +413,7 @@ Important files:
 - `lua/config/quarto.lua` coordinates document autocmds, Otter language discovery, LSP/diagnostic guards, and Noice popup filtering.
 - `lua/plugins/` contains plugin specifications, plugin-wide mappings, and plugin-specific configuration.
 - `lazy-lock.json` locks plugin versions for reproducible installs.
+- `VERSION` records the configuration version; `CHANGELOG.md` summarizes its releases.
 
 ## Customization
 
@@ -359,17 +428,26 @@ Common changes:
 - Change Treesitter parsers in `lua/plugins/treesitter.lua`.
 - Change the colorscheme in `lua/plugins/theme.lua`.
 
-After changing plugin specifications, open Neovim and run:
+Restart Neovim after editing configuration, then use `:Lazy` to inspect the plugin state. Select the operation that matches the change:
 
-```vim
-:Lazy sync
-```
+| Command | Purpose |
+| --- | --- |
+| `:Lazy install` | Install missing plugins |
+| `:Lazy restore` | Restore plugin revisions from `lazy-lock.json` |
+| `:Lazy update` | Update plugin revisions; individual plugins can be selected in the Lazy UI |
+| `:Lazy sync` | Combine cleanup, installation, and updates |
+
+The update checker is enabled with notifications disabled. Plugin updates and their generated lockfile changes are reviewed separately from configuration edits. When updating nvim-treesitter, its `:TSUpdate` build hook keeps parser revisions aligned with the plugin.
+
+Inactive customization examples are labeled in the plugin files. They provide reference settings alongside comments explaining the active configuration.
 
 ## Status
 
 This is an active personal configuration. It is stable enough for my own daily use, but it should not be treated as a general-purpose Neovim distribution.
 
 The setup will continue to evolve as my workflow changes, especially around bioinformatics, Quarto documents, Python, R, and terminal-based development.
+
+Gitsigns is reserved for **version 2.1.0** and is currently **on hold**. See `VERSION` and `CHANGELOG.md` for the current configuration release.
 
 ## Contributing and Feedback
 

@@ -11,13 +11,12 @@ return {
         "folke/todo-comments.nvim",
         dependencies = { "nvim-lua/plenary.nvim" },
         opts = {
-        -- your configuration comes here
-        -- or leave it empty to use the default settings
-        -- refer to the configuration section below
+        -- Use upstream keyword, highlighting, and search defaults.
         }
     }
 }
 
+-- Reference keyword examples; these illustrate the plugin's comment markers.
 -- PERF:
 -- HACK:
 -- TODO: 

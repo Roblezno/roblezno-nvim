@@ -1,6 +1,6 @@
 -- ================================================================
 -- TITLE: NeoVim Options
--- ABOUT: Basic settings native to neovim that I want to custom
+-- ABOUT: Native editor defaults, persistent undo, folding, and window behavior
 -- ================================================================
 
 -- Basic Settings
@@ -8,9 +8,9 @@ vim.opt.number = true -- Line numbers
 vim.opt.relativenumber = true -- Relative line numbers
 vim.opt.cursorline = true -- Highlight current line
 vim.opt.scrolloff = 10 -- Keep 10 lines above/below cursor
-vim.opt.wrap = false -- Don't warp lines
-vim.opt.sidescrolloff = 8 -- Keep 8 columns left/right of cursor whith wrap = false
-vim.opt.cmdheight = 1 -- Command line heigth
+vim.opt.wrap = false -- Display long lines without wrapping
+vim.opt.sidescrolloff = 8 -- Keep 8 columns left/right of the cursor when scrolling
+vim.opt.cmdheight = 1 -- Command-line height
 vim.opt.spelllang = { "en" }
 
 -- Tabbing / Indentation
@@ -26,7 +26,7 @@ vim.opt.grepformat = "%f:%l:%c:%m" -- filename, line number, column, content
 -- Search Settings
 vim.opt.ignorecase = true -- Case-insensitive search
 vim.opt.smartcase = true -- Case-sensitive if uppercase in search
-vim.opt.hlsearch = true -- Don't highlight search results
+vim.opt.hlsearch = true -- Highlight search matches; <Esc> clears them with :nohlsearch
 vim.opt.incsearch = true -- Show matches as you type
 
 
@@ -35,7 +35,7 @@ vim.opt.termguicolors = true -- Enable 24-bit colors
 vim.opt.signcolumn = "yes" -- Always show sign column
 vim.opt.colorcolumn = "80" -- Show column at x characters
 vim.opt.showmatch = true -- Highlight matching brackets
-vim.opt.matchtime = 2 -- How long to show matching bracket
+vim.opt.matchtime = 2 -- Show the matching bracket for 0.2 seconds
 vim.opt.completeopt = "menuone,noinsert,noselect" -- Completion options
 vim.opt.showmode = false -- Don't show mode in command line
 vim.opt.pumheight = 10 -- Popup menu height
@@ -106,4 +106,3 @@ vim.opt.splitright = true -- Vertical splits open to the right
 
 
 -- END OF BASIC CONFIG OPTS
-

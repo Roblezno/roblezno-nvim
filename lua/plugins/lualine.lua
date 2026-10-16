@@ -2,7 +2,7 @@
 -- TITLE : lualine.nvim
 -- LINKS :
 --   > github : https://github.com/nvim-lualine/lualine.nvim
--- ABOUT : A blazing fast and easy to configure Neovim statusline written in Lua.
+-- ABOUT : Kanagawa statusline with icons and rounded section separators.
 -- ================================================================================================
 
 return {
