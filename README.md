@@ -192,7 +192,13 @@ Treesitter parsers are configured for:
 - Markdown.
 - Inline Markdown.
 
-Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Treesitter parsers can be added in `lua/plugins/treesitter.lua`.
+Parser installation and highlighting are configured separately. `lua/plugins/treesitter.lua` installs parsers and queries, while `lua/config/autocmds.lua` starts source-file highlighting for the `lua`, `python`, `r`, `sh`, `bash`, and `vim` filetypes. Shell buffers with the `sh` filetype explicitly use the Bash parser. Markdown and Quarto use their dedicated prose and spelling setup.
+
+If a source parser is unavailable when a buffer opens, highlighting activation is skipped without interrupting file loading. Reopen the buffer after parser installation finishes to retry activation.
+
+Treesitter folding is configured independently through Neovim's native fold expression in `lua/config/options.lua`. This highlighting setup does not enable nvim-treesitter's experimental indentation feature.
+
+Additional language servers can be added in `lua/plugins/lsp.lua`. Additional Treesitter parsers can be added in `lua/plugins/treesitter.lua`; to enable highlighting for another ordinary source language, also add its filetype to the `SourceTreesitter` autocmd in `lua/config/autocmds.lua` and account for any parser-name mismatch.
 
 ## Project Structure
 
