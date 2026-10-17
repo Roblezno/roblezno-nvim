@@ -8,26 +8,24 @@
 
 ## Overview
 
-`roblezno-nvim` is my personal Neovim setup. It is built to be practical, understandable, and easy to modify rather than a large pre-configured distribution.
+This config started as a minimal setup for learning and using nvim. 
 
-The configuration is designed around the way I work: writing code, analyzing data, editing Quarto and Markdown documents, and running code through terminal-based workflows. It is especially oriented toward Python, R, Lua, Vimscript, and bioinformatics-related development.
+As I started using it more and more it grew to a point where it no longer is a small setup I believe. 
+My goal now is for this config to be a polished IDE for bioinformatic usage (mainly). 
+This is where version 2 (the current one) comes into place. This is still a personal config, 
+everything is set up for my programming style and usage of Nvim. 
 
-This setup assumes that you already know what Neovim is, how to install it, and how to open files with it. The goal of this README is to explain what this configuration provides, how to install it, and where to start if you want to understand or modify it.
-
-## Philosophy
-
-I started this configuration because I wanted more control over my development environment.
-
-Full IDEs such as VS Code are powerful, but they can sometimes hide important details behind layers of abstraction. When a language server, formatter, syntax parser, or debugger breaks, it is not always obvious where the problem comes from.
-
-This configuration is my attempt to build an editor that stays close to the underlying tools. It is not minimal for the sake of being minimal, but it avoids unnecessary complexity. Each part of the setup should have a clear purpose and should be easy to inspect when something needs to be changed.
-
-The result is a Neovim setup that aims to be:
+This Neovim setup aims to be:
 
 - Fast enough for daily work.
-- Small enough to understand.
 - Useful for real programming and data workflows.
 - Flexible enough to keep evolving over time.
+
+## Status
+
+This is an active personal configuration. It is stable enough for my own daily use, but it should not be treated as a general-purpose Neovim distribution.
+The setup will continue to evolve as my workflow changes, especially around bioinformatics, Quarto documents, Python, R, and terminal-based development.
+
 
 ## Features
 
@@ -440,12 +438,6 @@ Restart Neovim after editing configuration, then use `:Lazy` to inspect the plug
 The update checker is enabled with notifications disabled. Plugin updates and their generated lockfile changes are reviewed separately from configuration edits. When updating nvim-treesitter, its `:TSUpdate` build hook keeps parser revisions aligned with the plugin.
 
 Inactive customization examples are labeled in the plugin files. They provide reference settings alongside comments explaining the active configuration.
-
-## Status
-
-This is an active personal configuration. It is stable enough for my own daily use, but it should not be treated as a general-purpose Neovim distribution.
-
-The setup will continue to evolve as my workflow changes, especially around bioinformatics, Quarto documents, Python, R, and terminal-based development.
 
 ## Contributing and Feedback
 
