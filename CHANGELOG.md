@@ -3,9 +3,7 @@
 `VERSION` records the current configuration version. Dated entries summarize
 completed releases; intermediate refinement milestones remain in Git history.
 
-**Planned work:** Gitsigns is reserved for version `2.1.0` and is **on hold**.
-
-## Unreleased
+## Lattest stable version
 
 ## 2.0.0 — 2026-10-17
 

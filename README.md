@@ -447,8 +447,6 @@ This is an active personal configuration. It is stable enough for my own daily u
 
 The setup will continue to evolve as my workflow changes, especially around bioinformatics, Quarto documents, Python, R, and terminal-based development.
 
-Gitsigns is reserved for **version 2.1.0** and is currently **on hold**. See `VERSION` and `CHANGELOG.md` for the current configuration release.
-
 ## Contributing and Feedback
 
 This repository is mainly a personal setup, but feedback is welcome. If you notice a bug, an unclear part of the configuration, or a better way to structure something, feel free to open an issue or suggest an improvement.
