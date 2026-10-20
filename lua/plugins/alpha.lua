@@ -10,6 +10,7 @@ return {
         -- Loads the dashboard into a local variable
         local dashboard = require('alpha.themes.dashboard')
 
+        -- TODO: Add custom intro helpers
         -- Custom dashboard artwork
         dashboard.section.header.val = {
         " ⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⣀⣤⣴⣶⡶⣶⣶⣦⣤⣀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀⠀ ",

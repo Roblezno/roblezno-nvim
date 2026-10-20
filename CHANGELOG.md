@@ -24,6 +24,16 @@ as follows:
 
 ## Unreleased
 
+### Fixed
+
+- Lualine uses its default section separators; the custom separator glyphs are
+  disabled.
+
+### Changed
+
+- Documentation update for this version's project scope: the README overview
+  now describes the project's goals and current status.
+
 ## 0.2.0 — 2026-10-17
 
 Consolidates refinement steps 1–8 and 10. Their commit messages carry the old
