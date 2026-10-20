@@ -1,14 +1,34 @@
 # Changelog
 
-`VERSION` records the current configuration version. Dated entries summarize
-completed releases; intermediate refinement milestones remain in Git history.
+`VERSION` records the latest released configuration version. Versions follow
+[Semantic Versioning](https://semver.org) in its `0.y.z` initial-development
+form: a minor bump (`0.2.0` → `0.3.0`) for new workflows or behavior changes,
+and a patch bump (`0.2.0` → `0.2.1`) for fixes and documentation. Each release
+is tagged `vX.Y.Z` on `main`.
 
-## Lattest stable version
+Work merged into `dev` is recorded under **Unreleased**. At release time, that
+section receives its version and date, `VERSION` is updated, and `main` is
+tagged. See the README's "Versioning and branches" section for the workflow.
 
-## 2.0.0 — 2026-10-17
+**Numbering before 2026-10-20:** earlier tags, commit messages, and the local
+implementation plan used a `1.x`/`2.x` scheme. They map to the current numbers
+as follows:
 
-Consolidates refinement steps 1–8 and 10, recorded during development as
-`1.0.1`–`1.0.8` and `1.0.10`. Step 9 was deferred, so `1.0.9` was skipped.
+| Old | Current |
+| --- | --- |
+| `1.0.0` (baseline) | `0.1.0` |
+| `1.0.1`–`1.0.10` (refinement steps) | Development of `0.2.0` |
+| `2.0.0` (refinement release) | `0.2.0` |
+| `2.0.1` (visual follow-up) | `0.2.1` |
+| `2.1.0` (planned Gitsigns) | `0.3.0` |
+
+## Unreleased
+
+## 0.2.0 — 2026-10-17
+
+Consolidates refinement steps 1–8 and 10. Their commit messages carry the old
+intermediate numbers `1.0.1`–`1.0.8` and `1.0.10`; step 9 (Gitsigns) was
+deferred, so `1.0.9` does not exist.
 
 ### Implemented
 
@@ -48,7 +68,7 @@ Consolidates refinement steps 1–8 and 10, recorded during development as
 Verification consisted of source/documentation review and Git whitespace
 checks. Tests, headless Neovim, health checks, and profiling were not run.
 
-## 1.0.0 — 2026-10-16
+## 0.1.0 — 2026-10-16
 
 ### Implemented
 
