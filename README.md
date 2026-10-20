@@ -413,6 +413,34 @@ Important files:
 - `lazy-lock.json` locks plugin versions for reproducible installs.
 - `VERSION` records the configuration version; `CHANGELOG.md` summarizes its releases.
 
+## Versioning and branches
+
+The configuration uses [Semantic Versioning](https://semver.org) in its `0.y.z` form, with a changelog in the [Keep a Changelog](https://keepachangelog.com) style. `CHANGELOG.md` explains the bump rules and maps the older `1.x`/`2.x` numbers to the current ones.
+
+Branch roles:
+
+- `main` contains released states only. Every release is an annotated `vX.Y.Z` tag.
+- `dev` integrates finished work before the next release.
+- Topic branches start from `dev`, use a lowercase prefix that describes the change (`fix-`, `feat-`, `refactor-`, `perf-`, `docs-`, or `chore-`), and are deleted after they are merged.
+
+Typical workflow:
+
+```sh
+# Start a change and record it under "Unreleased" in CHANGELOG.md.
+git switch -c fix-example dev
+git commit
+git switch dev
+git merge --no-ff fix-example
+git branch -d fix-example
+
+# Release: on a chore-release-X.Y.Z branch, set VERSION and turn
+# "Unreleased" into "X.Y.Z — date"; merge it into dev, then:
+git switch main
+git merge --ff-only dev
+git tag -a vX.Y.Z -m "Release X.Y.Z"
+git push origin main dev vX.Y.Z
+```
+
 ## Customization
 
 This configuration is intentionally split into small files so that each part is easy to find.
