@@ -12,7 +12,7 @@ This config started as a minimal setup for learning and using nvim.
 
 As I started using it more and more it grew to a point where it no longer is a small setup I believe. 
 My goal now is for this config to be a polished IDE for bioinformatic usage (mainly). 
-This is where version 2 (the current one) comes into place. This is still a personal config, 
+This is where version 0.2 (the current one) comes into place. This is still a personal config, 
 everything is set up for my programming style and usage of Nvim. 
 
 This Neovim setup aims to be:
