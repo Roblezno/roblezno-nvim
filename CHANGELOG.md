@@ -8,7 +8,7 @@ is tagged `vX.Y.Z` on `main`.
 
 Work merged into `dev` is recorded under **Unreleased**. At release time, that
 section receives its version and date, `VERSION` is updated, and `main` is
-tagged. See the README's "Versioning and branches" section for the workflow.
+tagged.
 
 **Numbering before 2026-10-20:** earlier tags, commit messages, and the local
 implementation plan used a `1.x`/`2.x` scheme. They map to the current numbers
@@ -28,6 +28,11 @@ as follows:
 
 - Lualine uses its default section separators; the custom separator glyphs are
   disabled.
+
+### Deleted
+
+- The README's "Versioning and branches" section. The versioning rules remain
+  at the top of this changelog.
 
 ### Changed
 
